@@ -9,4 +9,5 @@ include_directories(crow/include)
 
 file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR}/Debug)
 
-add_executable(SimpleForum src/main.cpp)
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
+add_executable(SimpleForum ${SOURCES})
