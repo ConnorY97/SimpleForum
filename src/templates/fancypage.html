@@ -1,6 +1,56 @@
 <!DOCTYPE html>
-<html>
-  <body>
-  <p>This has been changed!</p>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SimpleForum</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 2rem;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .nav {
+            margin-top: 1rem;
+        }
+
+        .nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        .nav a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            margin-top: 3rem;
+            color: #aaa;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to SimpleForum</h1>
+    <p>A lightweight forum demo built with C++ and Crow.</p>
+
+    <div class="nav">
+        <a href="/register">Register</a>
+        <a href="/login">Login</a>
+        <a href="/forums">View Forums</a>
+        <a href="/create-forum">Create Forum</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 SimpleForum Project</p>
+    </footer>
+</body>
 </html>
