@@ -20,6 +20,8 @@ inline void setupRegisterRoutes(crow::SimpleApp& app, UserService& userService) 
             return crow::response{400, error};
         }
 
-        return crow::response{200, "Registered successfully. <a href='/login'>Go to login</a>"};
+        crow::response res(302);
+        res.set_header("Location", "/");
+        return res;
     });
 }

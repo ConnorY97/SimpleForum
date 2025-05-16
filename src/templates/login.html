@@ -2,10 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
+    <title>Login</title>
 </head>
 <body>
-    <h1>Create an Account</h1>
+    <h1>Login</h1>
+
+    {{#success}}
+        <p style="color: red;">{{success}}</p>
+    {{/success}}
+
     <form action="/login" method="POST">
         <label>Username:</label><br>
         <input type="text" name="username" required><br><br>
@@ -15,6 +20,7 @@
 
         <input type="submit" value="Login">
     </form>
+
     <p><a href="/">Back to Home</a></p>
 </body>
 </html>
