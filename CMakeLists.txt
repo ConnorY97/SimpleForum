@@ -5,16 +5,32 @@ project(SimpleForum)
 set(CMAKE_CXX_STANDARD 17)
 
 add_definitions(-D_WIN32_WINNT=0x0601)
-add_compile_options(/wd4267 /wd4244)
+add_compile_options(/wd4267 /wd4244 /wd4566)
 
 include_directories(src/asio)
 include_directories(crow/include)
 
 file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR}/Debug)
 
-file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
+set(FORUM_CORE_SRC
+    src/services/UserService.cpp
+    src/utils/UrlUtils.cpp
+)
 
-enable_testing()
-add_subdirectory(tests)
+add_library(simpleforum_core STATIC ${FORUM_CORE_SRC})
+target_include_directories(simpleforum_core PUBLIC ${CMAKE_SOURCE_DIR}/src)
 
-add_executable(SimpleForum ${SOURCES})
+set(SIMPLEFORUM_MAIN
+    src/main.cpp
+)
+
+add_executable(SimpleForum ${SIMPLEFORUM_MAIN})
+target_link_libraries(SimpleForum PRIVATE simpleforum_core)
+
+
+option(BUILD_TESTS "Build unit tests" OFF)
+
+if(BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

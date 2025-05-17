@@ -11,8 +11,6 @@ int main() {
     crow::mustache::set_base("templates");
 
     setupLoginRoutes(app, userService);
-
-    // === Test GET /login with no error param
     {
         crow::response res(200);
         res.set_header("Location", "/login");
