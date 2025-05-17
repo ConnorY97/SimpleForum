@@ -5,9 +5,9 @@
 
 inline void setupLoginRoutes(crow::SimpleApp& app, UserService& userService)
 {
-    // ✅ GET /login (renders login form and displays error if needed)
     CROW_ROUTE(app, "/login").methods("GET"_method)
-    ([](const crow::request& req) -> crow::response {
+    ([](const crow::request& req) -> crow::response
+    {
         std::string errorMsg;
         if (req.url_params.get("error"))
         {
@@ -16,7 +16,7 @@ inline void setupLoginRoutes(crow::SimpleApp& app, UserService& userService)
 
         crow::mustache::context ctx({{"success", errorMsg}});
         auto page = crow::mustache::load("login.html").render(ctx);
-        return crow::response{page};  // ✅ Return a valid crow::response
+        return crow::response{page};
     });
 
     CROW_ROUTE(app, "/login").methods("POST"_method)
@@ -34,7 +34,7 @@ inline void setupLoginRoutes(crow::SimpleApp& app, UserService& userService)
         }
 
         crow::response res(302);
-        res.set_header("Location", "/");
+        res.set_header("Location", "/?loggedIn=" + url_encode("Logged in successfully"));
         return res;
     });
 }
