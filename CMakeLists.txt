@@ -7,8 +7,8 @@ set(CMAKE_CXX_STANDARD 17)
 add_definitions(-D_WIN32_WINNT=0x0601)
 add_compile_options(/wd4267 /wd4244 /wd4566)
 
-include_directories(src/asio)
-include_directories(crow/include)
+include_directories(external/asio)
+include_directories(external/crow/include)
 
 file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR}/Debug)
 
