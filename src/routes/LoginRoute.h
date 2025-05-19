@@ -34,7 +34,7 @@ inline void setupLoginRoutes(crow::SimpleApp& app, UserService& userService)
         }
 
         crow::response res(302);
-        res.set_header("Location", "/?loggedIn=" + url_encode("Logged in successfully"));
+        res.set_header("Location", "/?response=" + url_encode("Logged in successfully"));
         return res;
     });
 }

@@ -21,7 +21,7 @@ inline void setupRegisterRoutes(crow::SimpleApp& app, UserService& userService) 
         }
 
         crow::response res(302);
-        res.set_header("Location", "/");
+        res.set_header("Location", "/?response=" + url_encode("Registered successfully"));
         return res;
     });
 }

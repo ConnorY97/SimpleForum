@@ -5,13 +5,13 @@ inline void setupHomeRoutes(crow::SimpleApp& app) {
     CROW_ROUTE(app, "/").methods("GET"_method)
     ([](const crow::request& req) -> crow::response
     {
-        std::string loginMsg;
-        if (req.url_params.get("loggedIn"))
+        std::string responseMsg;
+        if (req.url_params.get("response"))
         {
-            loginMsg = req.url_params.get("loggedIn");
+            responseMsg = req.url_params.get("response");
         }
 
-        crow::mustache::context ctx({{"loggedIn", loginMsg}});
+        crow::mustache::context ctx({{"loggedIn", responseMsg}});
         auto page = crow::mustache::load("home.html").render(ctx);
         return crow::response{page};
     });
