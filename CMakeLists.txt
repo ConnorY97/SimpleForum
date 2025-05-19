@@ -1,14 +1,12 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
 
 project(SimpleForum)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions(-D_WIN32_WINNT=0x0601)
 add_compile_options(/wd4267 /wd4244 /wd4566)
-
-include_directories(external/asio)
-include_directories(external/crow/include)
 
 file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR}/Debug)
 
@@ -27,6 +25,9 @@ set(SIMPLEFORUM_MAIN
 add_executable(SimpleForum ${SIMPLEFORUM_MAIN})
 target_link_libraries(SimpleForum PRIVATE simpleforum_core)
 
+target_link_libraries(SimpleForum PRIVATE ws2_32)
+target_include_directories(SimpleForum PRIVATE ${CMAKE_SOURCE_DIR})
+target_include_directories(SimpleForum PRIVATE "${VCPKG_ROOT}/installed/x64-windows/include")
 
 option(BUILD_TESTS "Build unit tests" OFF)
 
