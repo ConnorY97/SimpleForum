@@ -1,3 +1,17 @@
+# Compiling
+## Requirements:
+- VCPKG: https://vcpkg.io/en/
+    - Crow: [Windows Install](https://crowcpp.org/master/getting_started/setup/windows/)
+
+## Build:
+1. Clone the repo: https://github.com/ConnorY97/SimpleForum.git
+2. `cd SimpleForum`
+3. `mkdir build && cd build`
+4. `cmake ..`
+5. `cmake --build . && cd Debug && ./SimpleForum.exe`
+6. In your browser of choice open `http://localhost:18080/`
+
 ## Notes:
-Cmds:
-- SimpleForums> cmake -S . -B build -DBUILD_TESTS=OFF <- This will turn tests off for faster compiling for testing the core app.
+To build tests:
+- `cmake -S . -B build -DBUILD_TESTS=ON`
+    - Run `-DBUILD_TESTS=OFF` again to improve compile time.
