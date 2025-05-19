@@ -35,3 +35,12 @@ if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
+
+set_target_properties(SimpleForum PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/Debug")
+
+add_custom_target(run
+    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Debug/SimpleForum.exe
+    DEPENDS SimpleForum
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Debug
+)
+

@@ -11,7 +11,7 @@ inline void setupHomeRoutes(crow::SimpleApp& app) {
             responseMsg = req.url_params.get("response");
         }
 
-        crow::mustache::context ctx({{"loggedIn", responseMsg}});
+        crow::mustache::context ctx({{"response", responseMsg}});
         auto page = crow::mustache::load("home.html").render(ctx);
         return crow::response{page};
     });
