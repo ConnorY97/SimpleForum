@@ -52,26 +52,55 @@ bool UserService::registerUser(const std::string& username, const std::string& p
     return true;
 }
 
-bool UserService::loginUser (const std::string&username, const std::string& password, std::string& error)
+bool UserService::loginUser(const std::string& username, const std::string& password, std::string& error)
 {
-    if (username.empty() || password.empty())
-    {
+    if (username.empty() || password.empty()) {
         error = "Missing username or password";
         return false;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
-    auto user = users_.find(username);
-    if (user == users_.end())
-    {
-        error = "Username does not exist";
+    const char* sql = "SELECT password FROM users WHERE username = ?;";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        error = std::string("Prepare failed: ") + sqlite3_errmsg(dataBase);
         return false;
     }
 
-    if (user->second != password)
-    {
-        error = "Password is incorrect";
+    sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_TRANSIENT);
+
+    int rc = sqlite3_step(stmt);
+    if (rc == SQLITE_ROW) {
+        const unsigned char* dbPassword = sqlite3_column_text(stmt, 0);
+        if (dbPassword && password == reinterpret_cast<const char*>(dbPassword)) {
+            sqlite3_finalize(stmt);
+            return true;
+        } else {
+            error = "Password is incorrect";
+            sqlite3_finalize(stmt);
+            return false;
+        }
+    } else if (rc == SQLITE_DONE) {
+        error = "Username does not exist";
+    } else {
+        error = std::string("Query failed: ") + sqlite3_errmsg(dataBase);
+    }
+
+    sqlite3_finalize(stmt);
+    return false;
+}
+
+bool UserService::clearUsers(std::string& error)
+{
+    const char* sql = "DELETE FROM users;";
+    char* errMsg = nullptr;
+
+    if (sqlite3_exec(dataBase, sql, nullptr, nullptr, &errMsg) != SQLITE_OK) {
+        error = std::string("Failed to clear users: ") + errMsg;
+        sqlite3_free(errMsg);
         return false;
     }
+
     return true;
 }
+
