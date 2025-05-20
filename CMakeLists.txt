@@ -23,16 +23,16 @@ set(SIMPLEFORUM_MAIN
 )
 
 add_executable(SimpleForum ${SIMPLEFORUM_MAIN})
-target_link_libraries(SimpleForum PRIVATE simpleforum_core)
+target_link_libraries(SimpleForum PRIVATE simpleforum_core ws2_32)
 
-target_link_libraries(SimpleForum PRIVATE ws2_32)
-target_include_directories(SimpleForum PRIVATE ${CMAKE_SOURCE_DIR})
+find_package(unofficial-sqlite3 CONFIG REQUIRED)
+target_link_libraries(simpleforum_core PRIVATE unofficial::sqlite3::sqlite3)
+
+find_package(crow CONFIG REQUIRED)
+target_include_directories(SimpleForum PRIVATE ${crow_INCLUDE_DIRS})
+
+set(VCPKG_ROOT "$ENV{VCPKG_ROOT}")
 target_include_directories(SimpleForum PRIVATE "${VCPKG_ROOT}/installed/x64-windows/include")
-
-include_directories(${CMAKE_SOURCE_DIR}/external/sqlite)
-link_libraries(sqlite3)
-file(COPY ${CMAKE_SOURCE_DIR}/external/sqlite/sqlite3.dll DESTINATION ${CMAKE_BINARY_DIR}/Debug)
-
 
 option(BUILD_TESTS "Build unit tests" OFF)
 
@@ -41,11 +41,15 @@ if(BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
-set_target_properties(SimpleForum PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/Debug")
+# Set output directories
+set_target_properties(SimpleForum PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/Debug"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/Release"
+)
 
+# Add a convenient run target
 add_custom_target(run
     COMMAND ${CMAKE_CURRENT_BINARY_DIR}/Debug/SimpleForum.exe
     DEPENDS SimpleForum
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Debug
 )
-
