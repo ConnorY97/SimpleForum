@@ -29,6 +29,11 @@ target_link_libraries(SimpleForum PRIVATE ws2_32)
 target_include_directories(SimpleForum PRIVATE ${CMAKE_SOURCE_DIR})
 target_include_directories(SimpleForum PRIVATE "${VCPKG_ROOT}/installed/x64-windows/include")
 
+include_directories(${CMAKE_SOURCE_DIR}/external/sqlite)
+link_libraries(sqlite3)
+file(COPY ${CMAKE_SOURCE_DIR}/external/sqlite/sqlite3.dll DESTINATION ${CMAKE_BINARY_DIR}/Debug)
+
+
 option(BUILD_TESTS "Build unit tests" OFF)
 
 if(BUILD_TESTS)
