@@ -1,10 +1,4 @@
-# Compiling
-## Requirements:
-- VCPKG: https://vcpkg.io/en/
-    - Crow: [Windows Install](https://crowcpp.org/master/getting_started/setup/windows/)
-    - SQLite: `vcpkg install sqlite`
-
-## Build:
+# Build
 1. Clone the repo: https://github.com/ConnorY97/SimpleForum.git
 2. `cd SimpleForum`
 3. `mkdir build && cd build`
