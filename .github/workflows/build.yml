@@ -16,10 +16,12 @@ jobs:
 
       - name: Create Build Directory
         shell: bash
-        run: |
-          mkdir build
+        run: mkdir build
 
       - name: Build
         working-directory: build
-        run: |
-          cmake ..      
+        run: cmake ..
+
+      - name: Compile
+        working-directory: build
+        run: cmake --build .
