@@ -14,9 +14,9 @@ file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR}/Debu
 file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR})
 
 set(FORUM_CORE_SRC
-    ${CMAKE_SOURCE_DIR}/src/services/UserService.cpp
-    ${CMAKE_SOURCE_DIR}/src/utils/UrlUtils.cpp
-    ${CMAKE_SOURCE_DIR}/external/sqlite3/sqlite3.c
+    src/services/UserService.cpp
+    src/utils/UrlUtils.cpp
+    external/sqlite3/sqlite3.c
 )
 
 add_library(simpleforum_core STATIC ${FORUM_CORE_SRC})
