@@ -5,13 +5,16 @@ project(SimpleForum)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_definitions(-D_WIN32_WINNT=0x0601)
-add_compile_options(/wd4267 /wd4244 /wd4566)
+if (WIN32)
+    add_definitions(-D_WIN32_WINNT=0x0601)
+    add_compile_options(/wd4267 /wd4244 /wd4566)
+endif()
 
-# When running from vs code
-file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR}/Debug)
-# When running from vs
-file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR})
+if (MSVC)
+    file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR}/Debug)
+else()
+    file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR})
+endif()
 
 set(FORUM_CORE_SRC
     src/services/UserService.cpp
@@ -59,7 +62,11 @@ add_library(crow INTERFACE)
 target_include_directories(crow INTERFACE ${crow_SOURCE_DIR}/include)
 target_link_libraries(crow INTERFACE asio)
 
-target_link_libraries(SimpleForum PRIVATE simpleforum_core crow ws2_32)
+target_link_libraries(SimpleForum PRIVATE simpleforum_core crow)
+
+if (WIN32)
+    target_link_libraries(SimpleForum PRIVATE simpleforum_core ws2_32)
+endif()
 
 option(BUILD_TESTS "Build unit tests" OFF)
 if(BUILD_TESTS)
