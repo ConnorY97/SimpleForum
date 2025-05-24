@@ -1,4 +1,4 @@
-#include "../external/crow/include/crow.h"
+#include "crow.h"
 #include "routes/LoginRoute.h"
 #include "services/UserService.h"
 #include <cassert>
