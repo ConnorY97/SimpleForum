@@ -11,7 +11,19 @@ inline void setupHomeRoutes(crow::SimpleApp& app) {
             responseMsg = req.url_params.get("response");
         }
 
-        crow::mustache::context ctx({{"response", responseMsg}});
+        std::string cookieHeader = req.get_header_value("Cookie");
+        std::string username;
+        auto pos = cookieHeader.find("user=");
+        if (pos != std::string::npos) {
+            auto end = cookieHeader.find(";", pos);
+            username = cookieHeader.substr(pos + 5, end - (pos + 5));
+        }
+
+        crow::mustache::context ctx({
+            {"response", responseMsg},
+            {"isLoggedIn", !username.empty()},
+            {"username", username}
+        });
         auto page = crow::mustache::load("home.html").render(ctx);
         return crow::response{page};
     });

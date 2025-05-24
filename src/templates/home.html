@@ -47,14 +47,37 @@
     {{/response}}
 
     <div class="nav">
-        <a href="/register">Register</a>
-        <a href="/login">Login</a>
-        <a href="/forums">View Forums</a>
+        <a href="/forums">Show Forums</a>
+        {{#isLoggedIn}}
         <a href="/create-forum">Create Forum</a>
+        <a href="#" onclick="logout(event)">Log Out</a>
+        {{/isLoggedIn}}
+        {{^isLoggedIn}}
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+        {{/isLoggedIn}}
     </div>
-
     <footer>
         <p>&copy; 2025 SimpleForum Project</p>
     </footer>
 </body>
 </html>
+
+<script>
+    function logout(event) {
+        event.preventDefault();
+
+        fetch('/logout', {
+            method: 'POST',
+            credentials: 'same-origin'
+        }).then(response => {
+            if (response.ok) {
+                window.location.href = '/';
+            } else {
+                alert("Logout failed.");
+            }
+        }).catch(err => {
+            console.error("Error logging out:", err);
+        });
+    }
+</script>

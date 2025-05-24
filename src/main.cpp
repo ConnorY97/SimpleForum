@@ -2,6 +2,7 @@
 #include "routes/HomeRoute.h"
 #include "routes/RegisterRoute.h"
 #include "routes/LoginRoute.h"
+#include "routes/LogoutRoute.h"
 #include "services/UserService.h"
 
 int main() {
@@ -13,5 +14,6 @@ int main() {
     setupHomeRoutes(app);
     setupRegisterRoutes(app, userService);
     setupLoginRoutes(app, userService);
+    setupLogoutRoutes(app);
     app.port(18080).multithreaded().run();
 }

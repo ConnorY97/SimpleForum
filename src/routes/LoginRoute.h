@@ -35,6 +35,10 @@ inline void setupLoginRoutes(crow::SimpleApp& app, UserService& userService)
 
         crow::response res(302);
         res.set_header("Location", "/?response=" + url_encode("Logged in successfully"));
+
+        // Setting a cookie
+        res.add_header("Set-Cookie", "user=" + username + "; Path=/; HttpOnly");
+
         return res;
     });
 }

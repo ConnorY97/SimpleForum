@@ -10,11 +10,10 @@ if (WIN32)
     add_compile_options(/wd4267 /wd4244 /wd4566)
 endif()
 
-if (MSVC)
-    file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR}/Debug)
-else()
-    file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR})
-endif()
+
+file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR}/Debug)
+file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR})
+
 
 set(FORUM_CORE_SRC
     src/services/UserService.cpp
