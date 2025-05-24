@@ -38,7 +38,7 @@ set(CPM_SOURCE_CACHE "${CMAKE_SOURCE_DIR}/external/.cpm-cache" CACHE STRING "CPM
 FetchContent_Declare(
   CPM
   GIT_REPOSITORY https://github.com/cpm-cmake/CPM.cmake.git
-  GIT_TAG origin/master
+  GIT_TAG v0.42.0
 )
 FetchContent_MakeAvailable(CPM)
 
