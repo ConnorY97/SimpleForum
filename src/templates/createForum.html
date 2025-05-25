@@ -6,12 +6,17 @@
 </head>
 <body>
     <h1>Create Forum</h1>
-    <form action="/createForum" method="POST">
-        <label>Title:</label><br>
-        <input type="text" name="Forum Title" required><br><br>
 
-        <label>Post:</label><br>
-        <input type="text" name="Post" required><br><br>
+    {{#error}}
+        <p style="color: red;">{{error}}</p>
+    {{/error}}
+
+    <form action="/create-forum" method="POST">
+        <label>Title:</label><br>
+        <input type="text" name="title" required><br><br>
+
+        <label>Description:</label><br>
+        <input type="text" name="description" required><br><br>
 
         <input type="submit" value="Post">
     </form>

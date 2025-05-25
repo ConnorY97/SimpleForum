@@ -18,6 +18,6 @@ int main() {
     setupRegisterRoutes(app, userService);
     setupLoginRoutes(app, userService);
     setupLogoutRoutes(app);
-    setupCreateForumRoutes(app);
+    setupCreateForumRoutes(app, forumService);
     app.port(18080).multithreaded().run();
 }

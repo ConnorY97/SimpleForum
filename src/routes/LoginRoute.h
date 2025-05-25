@@ -14,13 +14,14 @@ inline void setupLoginRoutes(crow::SimpleApp& app, UserService& userService)
             errorMsg = req.url_params.get("error");
         }
 
-        crow::mustache::context ctx({{"success", errorMsg}});
+        crow::mustache::context ctx({ {"error", errorMsg} });
         auto page = crow::mustache::load("login.html").render(ctx);
-        return crow::response{page};
+        return crow::response{ page };
     });
 
     CROW_ROUTE(app, "/login").methods("POST"_method)
-    ([&userService](const crow::request& req) -> crow::response {
+    ([&userService](const crow::request& req) -> crow::response
+    {
         auto fields = parse_url_encoded(req.body);
         std::string username = fields["username"];
         std::string password = fields["password"];
