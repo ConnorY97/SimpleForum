@@ -1,11 +1,38 @@
+cmake_minimum_required(VERSION 3.14)
+project(SimpleForumsTests LANGUAGES CXX)
+
+include(CTest)
+
+include(FetchContent)
+FetchContent_Declare(
+  CPM
+  GIT_REPOSITORY https://github.com/cpm-cmake/CPM.cmake.git
+  GIT_TAG origin/master
+)
+FetchContent_MakeAvailable(CPM)
+
+CPMAddPackage(
+  NAME Catch2
+  GITHUB_REPOSITORY catchorg/Catch2
+  VERSION 3.5.0
+  OPTIONS "CATCH_INSTALL_EXTRAS YES" "CATCH_INSTALL_DOCS NO"
+)
+
+list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
+include(Catch)
+
 add_executable(test_login
-    test_login.cpp
+  test_login.cpp
 )
 
 target_include_directories(test_login PRIVATE
-    ${CMAKE_SOURCE_DIR}/src
+  ${CMAKE_SOURCE_DIR}/src
 )
 
-target_link_libraries(test_login PRIVATE simpleforum_core crow)
+target_link_libraries(test_login PRIVATE
+  simpleforum_core
+  crow
+  Catch2::Catch2WithMain
+)
 
-add_test(NAME LoginTest COMMAND test_login)
+catch_discover_tests(test_login)

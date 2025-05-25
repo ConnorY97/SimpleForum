@@ -8,5 +8,6 @@
 
 ## Notes:
 To build tests:
-- `cmake -S . -B build -DBUILD_TESTS=ON`
+1. In the root of the project
+2. run `cmake -S . -B build -DBUILD_TESTS=ON`
     - Run `-DBUILD_TESTS=OFF` again to improve compile time.
