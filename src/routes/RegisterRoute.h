@@ -3,7 +3,8 @@
 #include "../services/UserService.h"
 #include "../utils/UrlUtils.h"
 
-inline void setupRegisterRoutes(crow::SimpleApp& app, UserService& userService) {
+inline void setupRegisterRoutes(crow::SimpleApp& app, UserService& userService)
+{
     CROW_ROUTE(app, "/register").methods("GET"_method)([] {
         auto page = crow::mustache::load("register.html").render();
         return crow::response{page};

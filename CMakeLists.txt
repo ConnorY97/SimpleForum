@@ -17,6 +17,7 @@ file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR})
 
 set(FORUM_CORE_SRC
     src/services/UserService.cpp
+    src/services/ForumService.cpp
     src/utils/UrlUtils.cpp
     external/sqlite3/sqlite3.c
 )

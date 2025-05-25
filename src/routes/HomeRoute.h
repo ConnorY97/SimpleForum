@@ -1,7 +1,8 @@
 #pragma once
 #include "crow.h"
 
-inline void setupHomeRoutes(crow::SimpleApp& app) {
+inline void setupHomeRoutes(crow::SimpleApp& app)
+{
     CROW_ROUTE(app, "/").methods("GET"_method)
     ([](const crow::request& req) -> crow::response
     {

@@ -2,7 +2,7 @@
 
 UserService::UserService()
 {
-    if (sqlite3_open("forum.db", &dataBase)) {
+    if (sqlite3_open("user.db", &dataBase)) {
         std::cerr << "Can't open DB: " << sqlite3_errmsg(dataBase) << std::endl;
     }
 
