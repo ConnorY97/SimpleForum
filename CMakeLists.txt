@@ -15,11 +15,15 @@ file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR}/Debu
 file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR})
 
 
-set(FORUM_CORE_SRC
-    src/services/UserService.cpp
-    src/services/ForumService.cpp
-    src/utils/UrlUtils.cpp
-    external/sqlite3/sqlite3.c
+file(GLOB FORUM_CORE_SRC
+    ${CMAKE_SOURCE_DIR}/src/services/*.cpp
+    ${CMAKE_SOURCE_DIR}/src/utils/*.cpp
+    ${CMAKE_SOURCE_DIR}/external/sqlite3/sqlite3.c
+)
+
+file(GLOB_RECURSE FORUM_HEADERS
+    ${CMAKE_SOURCE_DIR}/src/services/*.h
+    ${CMAKE_SOURCE_DIR}/src/utils/*.h
 )
 
 add_library(simpleforum_core STATIC ${FORUM_CORE_SRC})

@@ -24,7 +24,7 @@ inline void setupCreateForumRoutes(crow::SimpleApp& app, ForumService& forumServ
         std::string description = fields["description"];
 
         std::string error;
-        if (true)
+        if (forumService.createForum(title, description, "Test", error))
         {
             crow::response res(302);
             res.set_header("Location", "/create-forum?error=" + url_encode("Failed to create forum, try again later"));
