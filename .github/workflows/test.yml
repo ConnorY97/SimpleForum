@@ -30,20 +30,21 @@ jobs:
         working-directory: build
         run: cmake --build .
 
-      - name: Test
+      - name: Run Catch2 tests with JUnit reporter
         working-directory: build
-        run: ctest -C DEBUG --output-junit testResult.xml
+        run: |
+          ctest -N | grep "test_" | awk '{print $2}' | while read testname; do ./$testname --reporter junit --out ${testname}.xml done
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Test Results
+          path: build/*.xml
 
       - name: Upload Results
         uses: dorny/test-reporter@v2
         with:
             fail-on-empty: "false"
             name: Test Results
-            path: "build/testResult.xml"
-            reporter: jest-junit
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Test Results
-          path: build/testResults.xml
+            path: "build/*.xml"
+            reporter: java-junit
