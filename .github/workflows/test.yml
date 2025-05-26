@@ -34,10 +34,9 @@ jobs:
       - name: Test
         working-directory: build
         run: |
-          echo "Listing files in build directory:"
-          ls -la
-          ./test_login --reporter junit --out test_login.xml
-          ./test_forums --reporter junit --out test_forums.xml
+          ls -la tests
+          ./tests/Debug/test_login --reporter junit --out test_login.xml
+          ./tests/Debug/test_forums --reporter junit --out test_forums.xml
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
