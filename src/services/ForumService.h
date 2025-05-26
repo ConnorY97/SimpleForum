@@ -11,11 +11,11 @@ public:
     ForumService();
     ~ForumService();
 
-    bool createForum(const std::string& title, const std::string& description, const std::string& createdBy, std::string& error);
+    bool createForum(const std::string& title, const std::string& description, const std::string& createdBy, int& forumId, std::string& error);
 
     std::vector<Forum> listForums(std::string& error);
 
-    // Later add updateForum, deleteForum if needed
+    bool getForumById(int id, Forum& forum, std::string& error);
 
 private:
     sqlite3* dataBase;

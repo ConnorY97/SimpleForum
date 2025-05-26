@@ -18,7 +18,7 @@ UserService::UserService()
         sqlite3_free(errMsg);
     }
 
-    std::cout << "Initiated sql database" << std::endl;
+    std::cout << "Initialized User Database" << std::endl;
 }
 
 UserService::~UserService()

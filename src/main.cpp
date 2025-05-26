@@ -4,6 +4,8 @@
 #include "routes/LoginRoute.h"
 #include "routes/LogoutRoute.h"
 #include "routes/CreateForumRoute.h"
+#include "routes/ListForumRoute.h"
+#include "routes/ViewForumRoute.h"
 #include "services/UserService.h"
 #include "services/ForumService.h"
 
@@ -19,5 +21,8 @@ int main() {
     setupLoginRoutes(app, userService);
     setupLogoutRoutes(app);
     setupCreateForumRoutes(app, forumService);
+    setupForumListRoutes(app, forumService);
+    setupForumViewRoutes(app, forumService);
+
     app.port(18080).multithreaded().run();
 }

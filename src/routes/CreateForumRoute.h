@@ -1,6 +1,7 @@
 #pragma once
 #include "crow.h"
 #include "../services/ForumService.h"
+#include "../utils/CookieUtils.h"
 
 inline void setupCreateForumRoutes(crow::SimpleApp& app, ForumService& forumService)
 {
@@ -22,15 +23,19 @@ inline void setupCreateForumRoutes(crow::SimpleApp& app, ForumService& forumServ
         auto fields = parse_url_encoded(req.body);
         std::string title = fields["title"];
         std::string description = fields["description"];
+        std::string username = getUsernameFromCookie(req);
 
         std::string error;
-        if (forumService.createForum(title, description, "Test", error))
+        int forumId;
+        if (!forumService.createForum(title, description, username, forumId, error))
         {
             crow::response res(302);
             res.set_header("Location", "/create-forum?error=" + url_encode("Failed to create forum, try again later"));
             return res;
         }
+
         crow::response res(302);
+        res.set_header("Location", "/forum/" + std::to_string(forumId));
         return res;
     });
 }

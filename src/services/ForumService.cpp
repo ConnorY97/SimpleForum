@@ -21,7 +21,7 @@ ForumService::ForumService()
         sqlite3_free(errMsg);
     }
 
-    std::cout << "Initialized SQL database" << std::endl;
+    std::cout << "Initialized Forum Database" << std::endl;
 }
 
 ForumService::~ForumService()
@@ -31,11 +31,10 @@ ForumService::~ForumService()
     }
 }
 
-bool ForumService::createForum(const std::string& title, const std::string& description, const std::string& createdBy, std::string& error)
+bool ForumService::createForum(const std::string& title, const std::string& description, const std::string& createdBy, int& forumId, std::string& error)
 {
     const char* sql =
-        "INSERT INTO forums (title, description, createdBy, createdAt) "
-        "VALUES (?, ?, ?, datetime('now'));";
+        "INSERT INTO forums (title, description, createdBy, createdAt) VALUES (?, ?, ?, datetime('now'));";
 
     sqlite3_stmt* stmt;
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
@@ -53,6 +52,7 @@ bool ForumService::createForum(const std::string& title, const std::string& desc
         return false;
     }
 
+    forumId = static_cast<int>(sqlite3_last_insert_rowid(dataBase));
     sqlite3_finalize(stmt);
     return true;
 }
@@ -82,3 +82,31 @@ std::vector<Forum> ForumService::listForums(std::string& error)
     sqlite3_finalize(stmt);
     return forums;
 }
+
+bool ForumService::getForumById(int id, Forum& forum, std::string& error)
+{
+    const char* sql = "SELECT id, title, description, createdBy, createdAt FROM forums WHERE id = ?;";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        error = sqlite3_errmsg(dataBase);
+        return false;
+    }
+
+    sqlite3_bind_int(stmt, 1, id);
+
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        forum.id = sqlite3_column_int(stmt, 0);
+        forum.title = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        forum.description = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        forum.createdBy = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+        forum.createdAt = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+        sqlite3_finalize(stmt);
+        return true;
+    }
+
+    sqlite3_finalize(stmt);
+    error = "Forum not found";
+    return false;
+}
+
