@@ -38,5 +38,5 @@ jobs:
         uses: dorny/test-reporter@v2
         with:
             name: Test Results
-            path: "*.xml"
-            reporter: jest-junit
+            path: "/home/runner/work/SimpleForum/SimpleForum/build/testResult.xml"
+            reporter: java-junit
