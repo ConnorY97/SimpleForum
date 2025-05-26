@@ -1,0 +1,35 @@
+name: Test
+
+on:
+  workflow_dispatch:
+    {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Create Build Directory
+        shell: bash
+        run: mkdir build
+
+      - name: Enable Testing
+        shell: bash
+        run: cmake -S . -B build -DBUILD_TESTS=ON
+
+      - name: Build
+        working-directory: build
+        run: cmake ..
+
+      - name: Compile
+        working-directory: build
+        run: cmake --build .
+
+      - name: Test
+        working-directory: build
+        run: ctest -C DEBUG

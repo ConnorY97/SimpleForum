@@ -36,3 +36,19 @@ target_link_libraries(test_login PRIVATE
 )
 
 catch_discover_tests(test_login)
+
+add_executable(test_forums
+  test_forums.cpp
+)
+
+target_include_directories(test_forums PRIVATE
+  ${CMAKE_SOURCE_DIR}/src
+)
+
+target_link_libraries(test_forums PRIVATE
+  simpleforum_core
+  crow
+  Catch2::Catch2WithMain
+)
+
+catch_discover_tests(test_forums)

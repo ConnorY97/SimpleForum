@@ -110,3 +110,17 @@ bool ForumService::getForumById(int id, Forum& forum, std::string& error)
     return false;
 }
 
+bool ForumService::clearForums(std::string& error)
+{
+    const char* sql = "DELETE FROM forums";
+    char* errMsg = nullptr;
+
+    if (sqlite3_exec(dataBase, sql, nullptr, nullptr, &errMsg) != SQLITE_OK) {
+        error = std::string("Failed to clear forums: ") + errMsg;
+        sqlite3_free(errMsg);
+        return false;
+    }
+
+    return true;
+}
+

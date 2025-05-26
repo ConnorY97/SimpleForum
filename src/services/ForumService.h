@@ -17,6 +17,8 @@ public:
 
     bool getForumById(int id, Forum& forum, std::string& error);
 
+    bool clearForums(std::string& error);
+
 private:
     sqlite3* dataBase;
 };
