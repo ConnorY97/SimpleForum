@@ -21,6 +21,7 @@ CPMAddPackage(
 list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
 include(Catch)
 
+# === test_login ===
 add_executable(test_login
   test_login.cpp
 )
@@ -35,8 +36,12 @@ target_link_libraries(test_login PRIVATE
   Catch2::Catch2WithMain
 )
 
-catch_discover_tests(test_login)
+catch_discover_tests(test_login
+  TEST_PREFIX "UserTests/"
+  PROPERTIES LABELS "UserTests"
+)
 
+# === test_forums ===
 add_executable(test_forums
   test_forums.cpp
 )
@@ -51,4 +56,7 @@ target_link_libraries(test_forums PRIVATE
   Catch2::Catch2WithMain
 )
 
-catch_discover_tests(test_forums)
+catch_discover_tests(test_forums
+  TEST_PREFIX "ForumTests/"
+  PROPERTIES LABELS "ForumTests"
+)
