@@ -29,13 +29,13 @@ jobs:
 
       - name: Compile
         working-directory: build
-        run: cmake --build . --target help
+        run: cmake --build .
 
       - name: Test
         working-directory: build
         run: |
-          ./tests/Debug/test_login.exe --reporter junit --out test_login.xml
-          ./tests/Debug/test_forums.exe --reporter junit --out test_forums.xml
+          ./test_login.exe --reporter junit --out test_login.xml
+          ./test_forums.exe --reporter junit --out test_forums.xml
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
