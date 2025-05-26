@@ -30,12 +30,11 @@ jobs:
         working-directory: build
         run: cmake --build .
 
-      - name: Run Catch2 tests with JUnit reporter
+      - name: Test
         working-directory: build
         run: |
-          ctest -N | grep "test_" | awk '{print $2}' | while read testname; do
-            ./$testname --reporter junit --out ${testname}.xml
-          done
+          ctest -C DEBUG --output-junit testResult.xml
+          sed -i 's/<testsuite name="(empty)"/<testsuite name="Unit Tests"/' testResult.xml
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
