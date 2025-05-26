@@ -34,9 +34,8 @@ jobs:
       - name: Test
         working-directory: build
         run: |
-          ls -la tests
-          ./tests/Debug/test_login --reporter junit --out test_login.xml
-          ./tests/Debug/test_forums --reporter junit --out test_forums.xml
+          ./tests/test_login --reporter junit --out test_login.xml
+          ./tests/test_forums --reporter junit --out test_forums.xml
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
