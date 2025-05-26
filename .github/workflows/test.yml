@@ -32,4 +32,11 @@ jobs:
 
       - name: Test
         working-directory: build
-        run: ctest -C DEBUG
+        run: ctest -C DEBUG --output-junit testResult.xml
+
+      - name: Upload Results
+        uses: dorny/test-reporter@v2
+        with:
+            name: Test Results
+            path: "*.xml"
+            reporter: jest-junit
