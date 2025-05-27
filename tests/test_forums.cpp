@@ -27,7 +27,8 @@ TEST_CASE("List forums", "[ForumService]")
 
 	for (int i = 0; i < forumAmount; i++)
 	{
-		bool result = forumService.createForum("Test Title", "Test Description", "Test User", i, error);
+		int forumId;
+		bool result = forumService.createForum("Test Title", "Test Description", "Test User", forumId, error);
 
 		REQUIRE(result);
 		REQUIRE(error.empty());
