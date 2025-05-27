@@ -13,7 +13,7 @@ public:
 
     bool createForum(const std::string& title, const std::string& description, const std::string& createdBy, int& forumId, std::string& error);
 
-    std::vector<Forum> listForums(std::string& error);
+    bool listForums(std::vector<Forum>& forums, std::string& error);
 
     bool getForumById(int id, Forum& forum, std::string& error);
 

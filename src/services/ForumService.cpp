@@ -57,16 +57,14 @@ bool ForumService::createForum(const std::string& title, const std::string& desc
     return true;
 }
 
-std::vector<Forum> ForumService::listForums(std::string& error)
+bool ForumService::listForums(std::vector<Forum>& forums, std::string& error)
 {
-    std::vector<Forum> forums;
-
     const char* sql = "SELECT id, title, description, createdBy, createdAt FROM forums;";
     sqlite3_stmt* stmt;
 
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
         error = sqlite3_errmsg(dataBase);
-        return forums;
+        return false;
     }
 
     while (sqlite3_step(stmt) == SQLITE_ROW) {
@@ -80,8 +78,9 @@ std::vector<Forum> ForumService::listForums(std::string& error)
     }
 
     sqlite3_finalize(stmt);
-    return forums;
+    return true;
 }
+
 
 bool ForumService::getForumById(int id, Forum& forum, std::string& error)
 {

@@ -1,12 +1,11 @@
 name: Test
 
 on:
-  push:
-    branches:
-      ["*"]
+  workflow_dispatch:
+    {}
 
 jobs:
-  build:
+  Test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
