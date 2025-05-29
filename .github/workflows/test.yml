@@ -35,7 +35,7 @@ jobs:
         run: |
           ./tests/test_login --reporter junit --out test_login.xml
           ./tests/test_forums --reporter junit --out test_forums.xml
-          ./tests/test_comments --reporter juint --out test_comments.xml
+          ./tests/test_comments --reporter junit --out test_comments.xml
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
