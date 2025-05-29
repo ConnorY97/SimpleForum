@@ -8,8 +8,7 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
     CROW_ROUTE(app, "/forum/<int>").methods("GET"_method)
     ([&forumService, &commentService](const crow::request& req, int forumId) -> crow::response
     {
-        auto urlParams = crow::query_string(req.url_params);
-        std::string errorParam = urlParams.get("error") ? urlParams.get("error") : "";
+        std::string errorParam = req.url_params.get("error") ? req.url_params.get("error") : "";
 
         std::string error;
         Forum forum;
@@ -58,6 +57,12 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
 
         std::string cookieHeader = req.get_header_value("Cookie");
         std::string username = getUsernameFromCookie(req);
+        if (username == "")
+        {
+            crow::response res(302);
+            res.set_header("Location", "/forum/" + std::to_string(forumId) + "?error=" + url_encode("Please log in to post comments"));
+            return res;
+        }
 
         std::string error;
         if (!commentService.addComment(forumId, username, comment, error))
