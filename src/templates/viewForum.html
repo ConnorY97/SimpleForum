@@ -19,9 +19,13 @@
     <p>No comments yet.</p>
     {{/comments}}
 
-    <input type="text" name="comment" required><br><br>
-
-    <input type="submit" value="Post">
+    {{#error}}
+    <p style="color: red;">{{error}}</p>
+    {{/error}}
+    <form action="/forum/{{id}}" method="POST">
+        <input type="text" name="comment" required><br><br>
+        <input type="submit" value="Post">
+    </form>
 
     <a href="/forums">Back to forum list</a>
 </body>
