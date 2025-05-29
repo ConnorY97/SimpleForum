@@ -9,8 +9,9 @@ TEST_CASE("Create a new forum successfully", "[ForumService]")
 	ForumService forumService;
 	std::string error;
 
-	int id = 1;
 	REQUIRE(forumService.clearForums(error));
+
+	int id = 1;
 	bool result = forumService.createForum("Test Title", "Test Description", "Test User", id, error);
 
 	REQUIRE(result);

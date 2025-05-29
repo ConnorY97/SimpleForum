@@ -60,3 +60,23 @@ catch_discover_tests(test_forums
   TEST_PREFIX "ForumTests/"
   PROPERTIES LABELS "ForumTests"
 )
+
+# === test_comments ===
+add_executable(test_comments
+  test_comments.cpp
+)
+
+target_include_directories(test_comments PRIVATE
+  ${CMAKE_SOURCE_DIR}/src
+)
+
+target_link_libraries(test_comments PRIVATE
+  simpleforum_core
+  crow
+  Catch2::Catch2WithMain
+)
+
+catch_discover_tests(test_comments
+  TEST_PREFIX "CommentTests/"
+  PROPERTIES LABELS "CommentTets"
+)

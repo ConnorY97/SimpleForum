@@ -81,3 +81,16 @@ bool CommentService::getCommentsForForum(int forumId, std::vector<Comment>& comm
     sqlite3_finalize(stmt);
     return true;
 }
+
+bool CommentService::clearComments(std::string& error)
+{
+    const char* sql = "DELETE FROM comments";
+    char* errMsg = nullptr;
+
+    if (sqlite3_exec(dataBase, sql, nullptr, nullptr, &errMsg) != SQLITE_OK) {
+        error = std::string("Failed to clear comments: ") + errMsg;
+        sqlite3_free(errMsg);
+        return false;
+    }
+    return true;
+}
