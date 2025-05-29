@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html>
-<head><title>{{title}}</title></head>
+<head>
+    <title>{{title}}</title>
+</head>
 <body>
     <h1>{{title}}</h1>
     <h2>{{description}}</h2>
     <p><small>Posted by {{createdBy}} on {{createdAt}}</small></p>
-    <p>Comments</p>
 
-    <p><strong>{{username}}</strong>: {{comment}} <br><small>{{createdAt}}</small></p>
+    <h3>Comments</h3>
+    {{#comments}}
+    <div style="margin-bottom: 1em;">
+        <p><strong>{{username}}</strong>: {{comment}}</p>
+        <p><small>{{createdAt}}</small></p>
+    </div>
+    {{/comments}}
+    {{^comments}}
+    <p>No comments yet.</p>
+    {{/comments}}
 
     <a href="/forums">Back to forum list</a>
 </body>

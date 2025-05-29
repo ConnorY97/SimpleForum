@@ -8,6 +8,7 @@
 #include "routes/ViewForumRoute.h"
 #include "services/UserService.h"
 #include "services/ForumService.h"
+#include "services/CommentService.h"
 
 int main() {
     crow::SimpleApp app;
@@ -15,6 +16,7 @@ int main() {
 
     UserService userService;
     ForumService forumService;
+    CommentService commentService;
 
     setupHomeRoutes(app);
     setupRegisterRoutes(app, userService);
@@ -22,7 +24,7 @@ int main() {
     setupLogoutRoutes(app);
     setupCreateForumRoutes(app, forumService);
     setupForumListRoutes(app, forumService);
-    setupForumViewRoutes(app, forumService);
+    setupForumViewRoutes(app, forumService, commentService);
 
     app.port(18080).multithreaded().run();
 }
