@@ -52,6 +52,35 @@ bool UserService::registerUser(const std::string& username, const std::string& p
     return true;
 }
 
+bool UserService::registerUser(const std::string& username, const std::string& password, std::string& confirmPassword, std::string& error)
+{
+    if (password != confirmPassword)
+    {
+        error = "Passwords do not mactch!";
+        return false;
+    }
+
+    const char* sql = "INSERT INTO users (username, password) VALUES (?, ?);";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        error = std::string("Prepare failed: ") + sqlite3_errmsg(dataBase);
+        return false;
+    }
+
+    sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, password.c_str(), -1, SQLITE_TRANSIENT);
+
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        error = std::string("Register failed: ") + sqlite3_errmsg(dataBase);
+        sqlite3_finalize(stmt);
+        return false;
+    }
+
+    sqlite3_finalize(stmt);
+    return true;
+}
+
 bool UserService::loginUser(const std::string& username, const std::string& password, std::string& error)
 {
     if (username.empty() || password.empty()) {

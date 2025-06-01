@@ -3,18 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2em auto;
+            max-width: 400px;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            padding: 2em;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 1em;
+        }
+
+        form {
+            margin-top: 1em;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.3em;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.8em;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-bottom: 1.2em;
+        }
+
+        input[type="submit"] {
+            padding: 0.7em 1.5em;
+            font-size: 1em;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+            input[type="submit"]:hover {
+                background-color: #218838;
+            }
+
+        .response {
+            color: red;
+            margin-bottom: 1em;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 2em;
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+    </style>
 </head>
 <body>
     <h1>Create an Account</h1>
-    <form action="/register" method="POST">
-        <label>Username:</label><br>
-        <input type="text" name="username" required><br><br>
 
-        <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
+    {{#response}}
+    <p class="response">{{response}}</p>
+    {{/response}}
+
+    <form action="/register" method="POST">
+        <label for="username">Username:</label>
+        <input id="username" type="text" name="username" required>
+
+        <label for="password">Password:</label>
+        <input id="password" type="password" name="password" required>
+
+        <label for="confirmPassword">Confirm Password:</label>
+        <input id="confirmPassword" type="password" name="confirmPassword" required>
 
         <input type="submit" value="Register">
     </form>
-    <p><a href="/">Back to Home</a></p>
+
+    <a href="/">← Back to Home</a>
 </body>
 </html>

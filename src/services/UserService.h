@@ -12,6 +12,7 @@ public:
     ~UserService();
 
     bool registerUser(const std::string& username, const std::string& password, std::string& error);
+    bool registerUser(const std::string& username, const std::string& password, std::string& confirmPassword, std::string& error);
     bool loginUser (const std::string&username, const std::string& password, std::string& error);
 
     bool clearUsers(std::string& error);
