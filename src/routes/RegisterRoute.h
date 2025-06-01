@@ -5,11 +5,20 @@
 
 inline void setupRegisterRoutes(crow::SimpleApp& app, UserService& userService)
 {
-    CROW_ROUTE(app, "/register").methods("GET"_method)([]
+    CROW_ROUTE(app, "/register").methods("GET"_method)(
+    [](const crow::request& req) -> crow::response
     {
-        auto page = crow::mustache::load("register.html").render();
-        return crow::response{page};
+        crow::mustache::context ctx;
+
+        if (const char* responseParam = req.url_params.get("response"))
+        {
+            ctx["response"] = responseParam;
+        }
+
+        auto page = crow::mustache::load("register.html").render(ctx);
+        return crow::response{ page };
     });
+
 
     CROW_ROUTE(app, "/register").methods("POST"_method)
     ([&userService](const crow::request& req)
@@ -22,7 +31,7 @@ inline void setupRegisterRoutes(crow::SimpleApp& app, UserService& userService)
         std::string error;
         if (!userService.registerUser(username, password, confirmPassword, error))
         {
-            crow::response res(400);
+            crow::response res(302);
             res.set_header("Location", "/register?response=" + url_encode(error));
             return res;
         }
