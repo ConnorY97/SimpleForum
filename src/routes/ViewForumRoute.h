@@ -36,6 +36,10 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
             cjson["username"] = c.username;
             cjson["comment"] = c.comment;
             cjson["createdAt"] = c.createdAt;
+            if (c.username == getUsernameFromCookie(req))
+            {
+                cjson["canEdit"] = true;
+            }
             commentList.push_back(std::move(cjson));
         }
         ctx["comments"] = std::move(commentList);

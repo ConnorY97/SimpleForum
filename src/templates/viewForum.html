@@ -76,6 +76,20 @@
                 background-color: #0056b3;
             }
 
+        input[type="submit"].edit-button {
+            padding: 0.4em 1em;
+            font-size: 0.9em;
+            background-color: #ccc;
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            input[type="submit"].edit-button:hover {
+                background-color: #bbb;
+            }
+
         .error {
             color: red;
             margin-top: 1em;
@@ -101,12 +115,28 @@
     <h3>Comments</h3>
     {{#comments}}
     <div class="comment">
-        <p><strong>{{username}}</strong>: {{comment}}</p>
-        <small>{{createdAt}}</small>
+        {{#isEditing}}
+            <form action="/comment/{{id}}/edit" method="POST">
+                <input type="text" name="updatedComment" value="{{comment}}" required>
+                <input type="submit" value="Save" class="edit-button">
+                <a href="/forum/{{forumId}}">Cancel</a>
+            </form>
+        {{/isEditing}}
+        {{^isEditing}}
+            <p><strong>{{username}}</strong>: {{comment}}</p>
+            <small>{{createdAt}}</small>
+            {{#canEdit}}
+            <form action="/forum/{{forumId}}/edit/{{id}}" method="GET" style="display:inline;">
+                <input type="submit" value="Edit" class="edit-button">
+            </form>
+            {{/canEdit}}
+            {{#canDelete}}
+            <form action="/comment/{{id}}/delete" method="POST" style="display:inline;">
+                <input type="submit" value="Delete">
+            </form>
+            {{/canDelete}}
+        {{/isEditing}}
     </div>
-    {{/comments}}
-    {{^comments}}
-    <p>No comments yet.</p>
     {{/comments}}
 
     {{#error}}
