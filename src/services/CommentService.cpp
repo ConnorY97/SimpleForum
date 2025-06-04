@@ -60,7 +60,7 @@ bool CommentService::addComment(int forumId, const std::string& username, const 
 
 bool CommentService::getCommentsForForum(int forumId, std::vector<Comment>& comments, std::string& error)
 {
-    const char* sql = "SELECT username, comment, createdAt FROM comments WHERE forumId = ? ORDER BY createdAt ASC;";
+    const char* sql = "SELECT id, username, comment, createdAt FROM comments WHERE forumId = ? ORDER BY createdAt ASC;";
     sqlite3_stmt* stmt;
 
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
@@ -72,10 +72,61 @@ bool CommentService::getCommentsForForum(int forumId, std::vector<Comment>& comm
 
     while (sqlite3_step(stmt) == SQLITE_ROW) {
         Comment comment;
-        comment.username = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
-        comment.comment = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-        comment.createdAt = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        comment.id = sqlite3_column_int(stmt, 0);
+        comment.username = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        comment.comment = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        comment.createdAt = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
         comments.push_back(comment);
+    }
+
+    sqlite3_finalize(stmt);
+    return true;
+}
+
+bool CommentService::getCommentById(int commentId, Comment& comment, std::string& error)
+{
+    const char* sql = "SELECT id, username, comment, createdAt FROM comments WHERE id = ?;";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        error = sqlite3_errmsg(dataBase);
+        return false;
+    }
+
+    sqlite3_bind_int(stmt, 1, commentId);
+
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        comment.id = sqlite3_column_int(stmt, 0);
+        comment.username = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        comment.comment = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        comment.createdAt = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+        sqlite3_finalize(stmt);
+        return true;
+    }
+    else {
+        error = "Comment not found";
+        sqlite3_finalize(stmt);
+        return false;
+    }
+}
+
+bool CommentService::updateCommentById(int commentId, const std::string& newText, std::string& error)
+{
+    const char* sql = "UPDATE comments SET comment = ? WHERE id = ?;";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        error = sqlite3_errmsg(dataBase);
+        return false;
+    }
+
+    sqlite3_bind_text(stmt, 1, newText.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt, 2, commentId);
+
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        error = sqlite3_errmsg(dataBase);
+        sqlite3_finalize(stmt);
+        return false;
     }
 
     sqlite3_finalize(stmt);

@@ -76,19 +76,19 @@
                 background-color: #0056b3;
             }
 
-        input[type="submit"].edit-button {
-            padding: 0.4em 1em;
-            font-size: 0.9em;
-            background-color: #ccc;
-            color: #333;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-            input[type="submit"].edit-button:hover {
-                background-color: #bbb;
+            input[type="submit"].edit-button {
+                padding: 0.4em 1em;
+                font-size: 0.9em;
+                background-color: #ccc;
+                color: #333;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
             }
+
+                input[type="submit"].edit-button:hover {
+                    background-color: #bbb;
+                }
 
         .error {
             color: red;
@@ -114,39 +114,97 @@
 
     <h3>Comments</h3>
     {{#comments}}
-    <div class="comment">
-        {{#isEditing}}
-            <form action="/comment/{{id}}/edit" method="POST">
-                <input type="text" name="updatedComment" value="{{comment}}" required>
-                <input type="submit" value="Save" class="edit-button">
-                <a href="/forum/{{forumId}}">Cancel</a>
-            </form>
-        {{/isEditing}}
-        {{^isEditing}}
-            <p><strong>{{username}}</strong>: {{comment}}</p>
-            <small>{{createdAt}}</small>
-            {{#canEdit}}
-            <form action="/forum/{{forumId}}/edit/{{id}}" method="GET" style="display:inline;">
-                <input type="submit" value="Edit" class="edit-button">
-            </form>
-            {{/canEdit}}
-            {{#canDelete}}
-            <form action="/comment/{{id}}/delete" method="POST" style="display:inline;">
-                <input type="submit" value="Delete">
-            </form>
-            {{/canDelete}}
-        {{/isEditing}}
+    <div class="comment" id="comment-{{id}}">
+        <p><strong>{{username}}</strong>: {{comment}}</p>
+        <small>{{createdAt}}</small>
+
+        {{#canEdit}}
+        <form onsubmit="return startEdit({{id}}, '{{comment}}')">
+            <input type="submit" value="Edit" class="edit-button">
+        </form>
+        {{/canEdit}}
+
+        {{#canDelete}}
+        <form action="/comment/{{id}}/delete" method="POST" style="display:inline;">
+            <input type="submit" value="Delete">
+        </form>
+        {{/canDelete}}
     </div>
     {{/comments}}
 
     {{#error}}
     <p class="error">{{error}}</p>
     {{/error}}
+
     <form action="/forum/{{id}}" method="POST">
         <input type="text" name="comment" placeholder="Write a comment..." required>
         <input type="submit" value="Post">
     </form>
 
     <a href="/forums">← Back to forum list</a>
+
+    <script>
+    function getUsernameFromCookie() {
+        const cookie = document.cookie.split('; ').find(row => row.startsWith('username='));
+        return cookie ? decodeURIComponent(cookie.split('=')[1]) : 'You';
+    }
+
+    function submitEdit(event, commentId) {
+        event.preventDefault();
+        const input = document.getElementById(`edit-input-${commentId}`);
+        const updatedComment = input.value;
+
+        fetch(`/comment/${commentId}/edit`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `updatedComment=${encodeURIComponent(updatedComment)}`
+        })
+        .then(res => {
+            if (res.ok) {
+                const commentDiv = document.getElementById(`comment-${commentId}`);
+                commentDiv.innerHTML = `
+                    <p><strong>${getUsernameFromCookie()}</strong>: ${updatedComment}</p>
+                    <small>just now</small>
+                    <form onsubmit="return startEdit(${commentId}, '${updatedComment}')">
+                        <input type="submit" value="Edit" class="edit-button">
+                    </form>
+                    <form action="/comment/${commentId}/delete" method="POST" style="display:inline;">
+                        <input type="submit" value="Delete">
+                    </form>
+                `;
+            } else {
+                alert("Failed to update comment.");
+            }
+        });
+
+        return false;
+    }
+
+    function cancelEdit(commentId, originalComment) {
+        const commentDiv = document.getElementById(`comment-${commentId}`);
+        commentDiv.innerHTML = `
+            <p><strong>${getUsernameFromCookie()}</strong>: ${originalComment}</p>
+            <small>just now</small>
+            <form onsubmit="return startEdit(${commentId}, '${originalComment}')">
+                <input type="submit" value="Edit" class="edit-button">
+            </form>
+            <form action="/comment/${commentId}/delete" method="POST" style="display:inline;">
+                <input type="submit" value="Delete">
+            </form>
+        `;
+    }
+
+    function startEdit(commentId, originalComment) {
+        const commentDiv = document.getElementById(`comment-${commentId}`);
+        commentDiv.innerHTML = `
+            <form onsubmit="return submitEdit(event, ${commentId})">
+                <input type="text" id="edit-input-${commentId}" value="${originalComment}" required>
+                <input type="submit" value="Save" class="edit-button">
+                <a href="#" onclick="cancelEdit(${commentId}, '${originalComment}')">Cancel</a>
+            </form>
+        `;
+        return false;
+    }
+    </script>
 </body>
 </html>
