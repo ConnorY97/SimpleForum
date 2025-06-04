@@ -249,14 +249,15 @@
             const input = document.getElementById("new-comment-input");
             const comment = input.value;
 
-            fetch(`/forum/${forumId}`, {
+            fetch(`/forum/${forumId}`,
+            {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `comment=${encodeURIComponent(comment)}`
-            }).then(res => {
+                }).then(res =>
+                {
                 if (res.ok) {
-                    // Optionally reload or re-fetch comments dynamically
-                    location.reload(); // Or call a function to update the comment list without reload
+                    location.reload();
                 } else {
                     alert("Failed to post comment.");
                 }

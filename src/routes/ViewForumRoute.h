@@ -64,6 +64,22 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
         return crow::response{ page };
     });
 
+    CROW_ROUTE(app, "/forum/<int>").methods("POST"_method)
+    ([&forumService, &commentService](const crow::request& req, int commentId)->crow::response
+    {
+        auto fields = parse_url_encoded(req.body);
+        std::string comment = fields["comment"];
+        std::string username = getUsernameFromCookie(req);
+
+        std::string error;
+        if (!commentService.addComment(commentId, username, comment, error))
+        {
+            return crow::response(400, error);
+        }
+
+        return crow::response(200);
+    });
+
     CROW_ROUTE(app, "/comment/<int>/edit").methods("POST"_method)
     ([&commentService](const crow::request& req, int commentId)
     {
@@ -73,22 +89,6 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
 
         std::string error;
         if (!commentService.updateCommentById(commentId, username, updated, error))
-        {
-            return crow::response(400, error);
-        }
-
-        return crow::response(200);
-    });
-
-    CROW_ROUTE(app, "/comment/<int>/comment").methods("POST"_method)
-    ([&commentService](const crow::request& req, int commentId)
-    {
-        auto fields = parse_url_encoded(req.body);
-        std::string comment = fields["comment"];
-        std::string username = getUsernameFromCookie(req);
-
-        std::string error;
-        if (!commentService.addComment(commentId, username, comment, error))
         {
             return crow::response(400, error);
         }
