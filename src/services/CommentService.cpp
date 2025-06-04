@@ -58,6 +58,32 @@ bool CommentService::addComment(int forumId, const std::string& username, const 
     return true;
 }
 
+bool CommentService::addComment(int forumId, const std::string& username, const std::string& commentText, int& commentId, std::string& error)
+{
+    const char* sql = "INSERT INTO comments (forumId, username, comment, createdAt) VALUES (?, ?, ?, datetime('now'));";
+
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        error = sqlite3_errmsg(dataBase);
+        return false;
+    }
+
+    sqlite3_bind_int(stmt, 1, forumId);
+    sqlite3_bind_text(stmt, 2, username.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, commentText.c_str(), -1, SQLITE_TRANSIENT);
+
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        error = sqlite3_errmsg(dataBase);
+        sqlite3_finalize(stmt);
+        return false;
+    }
+
+    commentId = static_cast<int>(sqlite3_last_insert_rowid(dataBase));
+
+    sqlite3_finalize(stmt);
+    return true;
+}
+
 bool CommentService::getCommentsForForum(int forumId, std::vector<Comment>& comments, std::string& error)
 {
     const char* sql = "SELECT id, username, comment, createdAt FROM comments WHERE forumId = ? ORDER BY createdAt ASC;";

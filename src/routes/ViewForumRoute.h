@@ -67,14 +67,15 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
 
     // Add comments
     CROW_ROUTE(app, "/forum/<int>").methods("POST"_method)
-    ([&forumService, &commentService](const crow::request& req, int commentId)->crow::response
+    ([&forumService, &commentService](const crow::request& req, int forumId)->crow::response
     {
         auto fields = parse_url_encoded(req.body);
         std::string comment = fields["comment"];
         std::string username = getUsernameFromCookie(req);
 
         std::string error;
-        if (!commentService.addComment(commentId, username, comment, error))
+        int commentId;
+        if (!commentService.addComment(forumId, username, comment, commentId, error))
         {
             return crow::response(400, error);
         }
