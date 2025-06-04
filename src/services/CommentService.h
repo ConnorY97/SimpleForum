@@ -17,7 +17,7 @@ public:
 
     bool getCommentById(int commentId, Comment& comment, std::string& error);
 
-    bool updateCommentById(int commentId, const std::string& newText, std::string& error);
+    bool updateCommentById(int commentId, std::string& username, const std::string& newText, std::string& error);
 
     bool clearComments(std::string& error);
 private:
