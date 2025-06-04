@@ -11,8 +11,6 @@ public:
     CommentService();
     ~CommentService();
 
-    bool addComment(int forumId, const std::string& username, const std::string& commentText, std::string& error);
-
     bool addComment(int forumId, const std::string& username, const std::string& commentText, int& commentId, std::string& error);
 
     bool getCommentsForForum(int forumId, std::vector<Comment>& comments, std::string& error);
