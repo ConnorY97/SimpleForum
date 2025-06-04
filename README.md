@@ -14,6 +14,7 @@
 
 ### Build and Run App
 1. After a commit run the following cmd `git push live master`
+    - If you need to create a commit for testing use `git commit --allow-empty -m "Commit Msg"`
 2. Input the password
 3. It should be live in a moment
 4. Confirm logs: `"/home/XXX/Documents/PersonalProjects/SimpleForum/post-receive.log"`
