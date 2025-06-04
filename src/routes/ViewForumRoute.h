@@ -5,6 +5,7 @@
 
 inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumService, CommentService& commentService)
 {
+    // View forum
     CROW_ROUTE(app, "/forum/<int>").methods("GET"_method)
     ([&forumService, &commentService](const crow::request& req, int forumId) -> crow::response
     {
@@ -64,6 +65,7 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
         return crow::response{ page };
     });
 
+    // Add comments
     CROW_ROUTE(app, "/forum/<int>").methods("POST"_method)
     ([&forumService, &commentService](const crow::request& req, int commentId)->crow::response
     {
@@ -80,6 +82,7 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
         return crow::response(200);
     });
 
+    // Edit comments
     CROW_ROUTE(app, "/comment/<int>/edit").methods("POST"_method)
     ([&commentService](const crow::request& req, int commentId)
     {
@@ -89,6 +92,19 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
 
         std::string error;
         if (!commentService.updateCommentById(commentId, username, updated, error))
+        {
+            return crow::response(400, error);
+        }
+
+        return crow::response(200);
+    });
+
+    // Delete comments
+    CROW_ROUTE(app, "/delete/<int>").methods("POST"_method)
+    ([&commentService](const crow::request& req, int commentId)
+    {
+        std::string error;
+        if (!commentService.deleteCommentById(commentId, error))
         {
             return crow::response(400, error);
         }

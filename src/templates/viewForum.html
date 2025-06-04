@@ -153,7 +153,7 @@
             {{/canEdit}}
 
             {{#canDelete}}
-            <form action="/comment/{{id}}/delete" method="POST" style="display:inline;">
+            <form onsubmit="return deleteComment(event, {{id}})">
                 <input type="submit" value="Delete" class="edit-button">
             </form>
             {{/canDelete}}
@@ -210,7 +210,7 @@
 
         function cancelEdit(event, commentId, originalComment)
         {
-            event.preventDefault(); // This is the key fix
+            event.preventDefault();
 
             const commentDiv = document.getElementById(`comment-${commentId}`);
             const username = getUsernameFromCookie();
@@ -222,7 +222,7 @@
                 <form onsubmit="return startEdit(${commentId}, '${originalComment.replace(/'/g, "\\'")}')">
                     <input type="submit" value="Edit" class="edit-button">
                 </form>
-                <form action="/comment/${commentId}" method="POST">
+                <form onsubmit="return deleteComment(event, ${commentId})">
                     <input type="submit" value="Delete" class="edit-button">
                 </form>
             </div>
@@ -265,6 +265,26 @@
 
             return false;
         }
+
+        function deleteComment(event, commentId)
+        {
+            event.preventDefault();
+
+            fetch(`/delete/${commentId}`, {
+                method: 'POST'
+            })
+                .then(res => {
+                    if (res.ok) {
+                        // Reload the page to reflect the deleted comment
+                        location.reload();
+                    } else {
+                        alert("Failed to delete comment.");
+                    }
+                });
+
+            return false;
+        }
+
     </script>
 </body>
 </html>

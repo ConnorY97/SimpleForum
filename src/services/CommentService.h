@@ -19,6 +19,8 @@ public:
 
     bool updateCommentById(int commentId, std::string& username, const std::string& newText, std::string& error);
 
+    bool deleteCommentById(int commentId, std::string& error);
+
     bool clearComments(std::string& error);
 private:
     sqlite3* dataBase;

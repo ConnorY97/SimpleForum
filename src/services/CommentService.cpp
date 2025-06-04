@@ -134,6 +134,29 @@ bool CommentService::updateCommentById(int commentId, std::string& username, con
     return true;
 }
 
+bool CommentService::deleteCommentById(int commentId, std::string& error)
+{
+    const char* sql = "DELETE FROM comments WHERE id = ?;";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        error = sqlite3_errmsg(dataBase);
+        return false;
+    }
+
+    sqlite3_bind_int(stmt, 1, commentId);
+
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        error = sqlite3_errmsg(dataBase);
+        sqlite3_finalize(stmt);
+        return false;
+    }
+
+    sqlite3_finalize(stmt);
+    return true;
+}
+
+
 bool CommentService::clearComments(std::string& error)
 {
     const char* sql = "DELETE FROM comments";
