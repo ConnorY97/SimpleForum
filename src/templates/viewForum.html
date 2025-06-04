@@ -76,6 +76,19 @@
                 background-color: #0056b3;
             }
 
+            input[type="submit"].save {
+                padding: 0.4em 1em;
+                font-size: 0.9em;
+                background-color: #007BFF;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+                input[type="submit"].save:hover {
+                    background-color: #0056b3;
+                }
+
             input[type="submit"].edit-button {
                 padding: 0.4em 1em;
                 font-size: 0.9em;
@@ -89,6 +102,20 @@
                 input[type="submit"].edit-button:hover {
                     background-color: #bbb;
                 }
+
+        button.cancel {
+            padding: 0.4em 1em;
+            font-size: 0.9em;
+            background-color: #ccc;
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            button.cancel:hover {
+                background-color: #bbb;
+            }
 
         .error {
             color: red;
@@ -118,17 +145,19 @@
         <p><strong>{{username}}</strong>: {{comment}}</p>
         <small>{{createdAt}}</small>
 
-        {{#canEdit}}
-        <form onsubmit="return startEdit({{id}}, '{{comment}}')">
-            <input type="submit" value="Edit" class="edit-button">
-        </form>
-        {{/canEdit}}
+        <div style="display: flex; gap: 0.5em; margin-top: 0.5em;">
+            {{#canEdit}}
+            <form onsubmit="return startEdit({{id}}, '{{comment}}')">
+                <input type="submit" value="Edit" class="edit-button">
+            </form>
+            {{/canEdit}}
 
-        {{#canDelete}}
-        <form action="/comment/{{id}}/delete" method="POST" style="display:inline;">
-            <input type="submit" value="Delete" class="edit-button">
-        </form>
-        {{/canDelete}}
+            {{#canDelete}}
+            <form action="/comment/{{id}}/delete" method="POST" style="display:inline;">
+                <input type="submit" value="Delete" class="edit-button">
+            </form>
+            {{/canDelete}}
+        </div>
     </div>
     {{/comments}}
 
@@ -168,7 +197,7 @@
                             <p><strong>${getUsernameFromCookie()}</strong>: ${updatedComment}</p>
                             <small>just now</small>
                             <form onsubmit="return startEdit(${commentId}, '${updatedComment}')">
-                                <input type="submit" value="Edit">
+                                <input type="submit" value="Edit" class="edit-button">
                             </form>
                         `;
                     } else {
@@ -179,20 +208,26 @@
             return false;
         }
 
-        function cancelEdit(commentId, originalComment) {
+        function cancelEdit(event, commentId, originalComment)
+        {
+            event.preventDefault(); // This is the key fix
+
             const commentDiv = document.getElementById(`comment-${commentId}`);
+            const username = getUsernameFromCookie();
+
             commentDiv.innerHTML = `
-                    <p><strong>${getUsernameFromCookie()}</strong>: ${originalComment}</p>
-                    <small>just now</small>
-                    <div style="display: flex; gap: 0.5em; margin-top: 0.5em;">
-                        <form onsubmit="return startEdit({{id}}, '{{comment}}')">
-                            <input type="submit" value="Edit" class="edit-button">
-                        </form>
-                        <form action="/comment/{{id}}/delete" method="POST">
-                            <input type="submit" value="Delete" class="edit-button">
-                        </form>
-                    </div>
-                `;
+            <p><strong>${username}</strong>: ${originalComment}</p>
+            <small>just now</small>
+            <div style="display: flex; gap: 0.5em; margin-top: 0.5em;">
+                <form onsubmit="return startEdit(${commentId}, '${originalComment.replace(/'/g, "\\'")}')">
+                    <input type="submit" value="Edit" class="edit-button">
+                </form>
+                <form action="/comment/${commentId}" method="POST">
+                    <input type="submit" value="Delete" class="edit-button">
+                </form>
+            </div>
+        `;
+            return false;
         }
 
         function startEdit(commentId, originalComment) {
@@ -200,8 +235,9 @@
             commentDiv.innerHTML = `
                     <form onsubmit="return submitEdit(event, ${commentId})">
                         <input type="text" id="edit-input-${commentId}" value="${originalComment}" required>
-                        <input type="submit" value="Save" class="edit-button">
-                        <a href="#" onclick="cancelEdit(${commentId}, '${originalComment}')">Cancel</a>
+                        <input type="submit" value="Save" class="save">
+                        <button type="button" onclick="cancelEdit(event, ${commentId}, '${originalComment.replace(/'/g, "\\'")}')" class="cancel">Cancel</button>
+
                     </form>
                 `;
             return false;
