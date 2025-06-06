@@ -139,24 +139,25 @@
     <h2>{{description}}</h2>
     <p class="post-meta">Posted by {{createdBy}} on {{createdAt}}</p>
 
+    {{#canEditPost}}
+        <p>This is your post</p>
+    {{/canEditPost}}
+
     <h3>Comments</h3>
     {{#comments}}
-    <div class="comment" id="comment-{{id}}">
+    <div class="comment" id="comment-{{id}}" data-created-at="{{createdAt}}">
         <p><strong>{{username}}</strong>: {{comment}}</p>
         <small>{{createdAt}}</small>
 
         <div style="display: flex; gap: 0.5em; margin-top: 0.5em;">
-            {{#canEdit}}
-            <form onsubmit="return startEdit({{ id }}, '{{comment}}')">
-                <input type="submit" value="Edit" class="edit-button">
-            </form>
-            {{/canEdit}}
-
-            {{#canDelete}}
-            <form onsubmit="return deleteComment(event, {{id}})">
-                <input type="submit" value="Delete" class="edit-button">
-            </form>
-            {{/canDelete}}
+            {{#canEditComment}}
+                <form onsubmit="return startEdit({{ id }}, '{{comment}}')">
+                    <input type="submit" value="Edit" class="edit-button">
+                </form>
+                <form onsubmit="return deleteComment(event, {{id}})">
+                    <input type="submit" value="Delete" class="edit-button">
+                </form>
+            {{/canEditComment}}
         </div>
     </div>
     {{/comments}}
@@ -187,26 +188,31 @@
 
         function submitEdit(event, commentId) {
             event.preventDefault();
+
             const input = document.getElementById(`edit-input-${commentId}`);
             const updatedComment = input.value;
 
-            fetch(`/comment/${commentId}/edit`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `updatedComment=${encodeURIComponent(updatedComment)}`
-            })
+            const commentDiv = document.getElementById(`comment-${commentId}`);
+            const createdAt = commentDiv.dataset.createdAt;
+
+            fetch(`/comment/${commentId}/edit`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `updatedComment=${encodeURIComponent(updatedComment)}`
+                })
                 .then(res => {
                     if (res.ok) {
-                        const commentDiv = document.getElementById(`comment-${commentId}`);
                         commentDiv.innerHTML =
                             `
-                            <p><strong>${getUsernameFromCookie()}</strong>: ${updatedComment}</p>
-                            <small>just now</small>
-                            <form onsubmit="return startEdit(${commentId}, '${updatedComment}')">
-                                <input type="submit" value="Edit" class="edit-button">
-                            </form>
-                        `;
-                    } else {
+                                <p><strong>${getUsernameFromCookie()}</strong>: ${updatedComment}</p>
+                                <small>${createdAt}</small>
+                                <form onsubmit="return startEdit(${commentId}, '${updatedComment.replace(/'/g, "\\'")}')">
+                                    <input type="submit" value="Edit" class="edit-button">
+                                </form>
+                            `;
+                    }
+                    else {
                         alert("Failed to update comment.");
                     }
                 });
@@ -214,76 +220,77 @@
             return false;
         }
 
-        function cancelEdit(event, commentId, originalComment)
-        {
+
+        function cancelEdit(event, commentId, originalComment) {
             event.preventDefault();
 
             const commentDiv = document.getElementById(`comment-${commentId}`);
             const username = getUsernameFromCookie();
 
-            commentDiv.innerHTML = `
-            <p><strong>${username}</strong>: ${originalComment}</p>
-            <small>just now</small>
-            <div style="display: flex; gap: 0.5em; margin-top: 0.5em;">
-                <form onsubmit="return startEdit(${commentId}, '${originalComment.replace(/'/g, "\\'")}')">
-                    <input type="submit" value="Edit" class="edit-button">
-                </form>
-                <form onsubmit="return deleteComment(event, ${commentId})">
-                    <input type="submit" value="Delete" class="edit-button">
-                </form>
-            </div>
-        `;
+            commentDiv.innerHTML =
+                `
+                        <p><strong>${username}</strong>: ${originalComment}</p>
+                        <small>just now</small>
+                        <div style="display: flex; gap: 0.5em; margin-top: 0.5em;">
+                            <form onsubmit="return startEdit(${commentId}, '${originalComment.replace(/'/g, "\\'")}')">
+                                <input type="submit" value="Edit" class="edit-button">
+                            </form>
+                            <form onsubmit="return deleteComment(event, ${commentId})">
+                                <input type="submit" value="Delete" class="edit-button">
+                            </form>
+                        </div>
+                    `;
             return false;
         }
 
         function startEdit(commentId, originalComment) {
             const commentDiv = document.getElementById(`comment-${commentId}`);
-            commentDiv.innerHTML = `
-                    <form onsubmit="return submitEdit(event, ${commentId})">
-                        <input type="text" id="edit-input-${commentId}" value="${originalComment}" required>
-                        <input type="submit" value="Save" class="save">
-                        <button type="button" onclick="cancelEdit(event, ${commentId}, '${originalComment.replace(/'/g, "\\'")}')" class="cancel">Cancel</button>
-
-                    </form>
-                `;
+            commentDiv.innerHTML =
+                `
+                        <form onsubmit="return submitEdit(event, ${commentId})">
+                            <input type="text" id="edit-input-${commentId}" value="${originalComment}" required>
+                            <input type="submit" value="Save" class="save">
+                            <button type="button" onclick="cancelEdit(event, ${commentId}, '${originalComment.replace(/'/g, "\\'")}')" class="cancel">Cancel</button>
+                        </form>
+                    `;
             return false;
         }
 
-        function addComment(event, forumId)
-        {
+        function addComment(event, forumId) {
             event.preventDefault();
             const input = document.getElementById("new-comment-input");
             const comment = input.value;
 
             fetch(`/forum/${forumId}`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `comment=${encodeURIComponent(comment)}`
-                }).then(res =>
                 {
-                if (res.ok) {
-                    location.reload();
-                } else {
-                    alert("Failed to post comment.");
-                }
-            });
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `comment=${encodeURIComponent(comment)}`
+                })
+                .then(res => {
+                    if (res.ok) {
+                        location.reload();
+                    }
+                    else {
+                        alert("Failed to post comment.");
+                    }
+                });
 
             return false;
         }
 
-        function deleteComment(event, commentId)
-        {
+        function deleteComment(event, commentId) {
             event.preventDefault();
 
-            fetch(`/delete/${commentId}`, {
-                method: 'POST'
-            })
+            fetch(`/delete/${commentId}`,
+                {
+                    method: 'POST'
+                })
                 .then(res => {
                     if (res.ok) {
-                        // Reload the page to reflect the deleted comment
                         location.reload();
-                    } else {
+                    }
+                    else {
                         alert("Failed to delete comment.");
                     }
                 });

@@ -10,8 +10,8 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
     ([&forumService, &commentService](const crow::request& req, int forumId) -> crow::response
     {
         std::string errorParam = req.url_params.get("error") ? req.url_params.get("error") : "";
-
         std::string error;
+        std::string currentUser = getUsernameFromCookie(req);
         Forum forum;
         if (!forumService.getForumById(forumId, forum, error))
         {
@@ -31,8 +31,10 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
         ctx["createdBy"] = forum.createdBy;
         ctx["createdAt"] = forum.createdAt;
 
-        std::string currentUser = getUsernameFromCookie(req);
-        std::string editIdParam = req.url_params.get("edit") ? req.url_params.get("edit") : "";
+        if (forum.createdBy == currentUser)
+        {
+            ctx["canEditPost"] = true;
+        }
 
         std::vector<crow::json::wvalue> commentList;
         for (const auto& c : comments)
@@ -44,14 +46,9 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
             cjson["comment"] = c.comment;
             cjson["createdAt"] = c.createdAt;
 
-            if (!editIdParam.empty() && std::to_string(c.id) == editIdParam)
+            if (c.username == currentUser)
             {
-                cjson["isEditing"] = true;
-            }
-            else if (c.username == currentUser)
-            {
-                cjson["canEdit"] = true;
-                cjson["canDelete"] = true;
+                cjson["canEditComment"] = true;
             }
 
             commentList.push_back(std::move(cjson));
