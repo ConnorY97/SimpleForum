@@ -14,6 +14,10 @@ endif()
 file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR}/Debug)
 file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR})
 
+# Copy the public dir to the build directory too
+file(COPY ${CMAKE_SOURCE_DIR}/src/public DESTINATION ${CMAKE_BINARY_DIR}/Debug)
+file(COPY ${CMAKE_SOURCE_DIR}/src/public DESTINATION ${CMAKE_BINARY_DIR})
+
 # Source, header, and template files
 file(GLOB_RECURSE FORUM_CORE_SRC
     ${CMAKE_SOURCE_DIR}/src/services/*.cpp
@@ -28,23 +32,31 @@ file(GLOB_RECURSE FORUM_HEADERS
 
 file(GLOB TEMPLATE_FILES ${CMAKE_SOURCE_DIR}/src/templates/*)
 file(GLOB ROUTE_FILES ${CMAKE_SOURCE_DIR}/src/routes/*)
+file(GLOB JAVA_FILES ${CMAKE_SOURCE_DIR}/src/public/java/*)
+file(GLOB STYLE_FILES ${CMAKE_SOURCE_DIR}/src/public/styles/*)
 
 # Group files in Visual Studio
 source_group("Source Files" FILES ${FORUM_CORE_SRC})
 source_group("Header Files" FILES ${FORUM_HEADERS})
 source_group("Route Files" FILES ${ROUTE_FILES})
 source_group("Templates" FILES ${TEMPLATE_FILES})
+source_group("Java" FILES ${JAVA_FILES})
+source_group("Style" FILES ${STYLE_FILES})
 
 # Create core static library
-add_library(simpleforum_core STATIC ${FORUM_CORE_SRC} ${FORUM_HEADERS} ${ROUTE_FILES})
+add_library(SimpleForum_core STATIC ${FORUM_CORE_SRC} ${FORUM_HEADERS} ${ROUTE_FILES})
 
-target_include_directories(simpleforum_core PUBLIC 
+target_include_directories(SimpleForum_core PUBLIC
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/external/sqlite3
 )
 
-# Add template files to dummy target for visibility
-add_custom_target(template_files SOURCES ${TEMPLATE_FILES})
+# Add template/public files to dummy target for visibility
+add_custom_target(Public SOURCES
+    ${TEMPLATE_FILES}
+    ${JAVA_FILES}
+    ${STYLE_FILES}
+)
 
 # Main application source
 set(SIMPLEFORUM_MAIN
@@ -83,10 +95,10 @@ target_include_directories(crow INTERFACE ${crow_SOURCE_DIR}/include)
 target_link_libraries(crow INTERFACE asio)
 
 # Link everything together
-target_link_libraries(SimpleForum PRIVATE simpleforum_core crow)
+target_link_libraries(SimpleForum PRIVATE SimpleForum_core crow)
 
 if (WIN32)
-    target_link_libraries(SimpleForum PRIVATE simpleforum_core ws2_32)
+    target_link_libraries(SimpleForum PRIVATE SimpleForum_core ws2_32)
 endif()
 
 # Enable optional unit tests

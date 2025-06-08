@@ -6,9 +6,11 @@
 #include "routes/CreateForumRoute.h"
 #include "routes/ListForumRoute.h"
 #include "routes/ViewForumRoute.h"
+#include "routes/StaticRoutes.h"
 #include "services/UserService.h"
 #include "services/ForumService.h"
 #include "services/CommentService.h"
+
 
 int main() {
     crow::SimpleApp app;
@@ -18,6 +20,7 @@ int main() {
     ForumService forumService;
     CommentService commentService;
 
+    setUpStaticRoutes(app);
     setupHomeRoutes(app);
     setupRegisterRoutes(app, userService);
     setupLoginRoutes(app, userService);
