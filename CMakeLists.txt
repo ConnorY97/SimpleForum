@@ -10,15 +10,12 @@ if (WIN32)
     add_compile_options(/wd4267 /wd4244 /wd4566)
 endif()
 
-# Copy templates to build directory
-file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR}/Debug)
+# Copy static asset directories (templates and public) to the build directory
+# Only copying once here — adjust if multi-config generator support needed
 file(COPY ${CMAKE_SOURCE_DIR}/src/templates DESTINATION ${CMAKE_BINARY_DIR})
-
-# Copy the public dir to the build directory too
-file(COPY ${CMAKE_SOURCE_DIR}/src/public DESTINATION ${CMAKE_BINARY_DIR}/Debug)
 file(COPY ${CMAKE_SOURCE_DIR}/src/public DESTINATION ${CMAKE_BINARY_DIR})
 
-# Source, header, and template files
+# Source and header files
 file(GLOB_RECURSE FORUM_CORE_SRC
     ${CMAKE_SOURCE_DIR}/src/services/*.cpp
     ${CMAKE_SOURCE_DIR}/src/utils/*.cpp
@@ -30,10 +27,12 @@ file(GLOB_RECURSE FORUM_HEADERS
     ${CMAKE_SOURCE_DIR}/src/utils/*.h
 )
 
+# Templates, routes, and public files for IDE visibility
 file(GLOB TEMPLATE_FILES ${CMAKE_SOURCE_DIR}/src/templates/*)
 file(GLOB ROUTE_FILES ${CMAKE_SOURCE_DIR}/src/routes/*)
-file(GLOB JAVA_FILES ${CMAKE_SOURCE_DIR}/src/public/java/*)
-file(GLOB STYLE_FILES ${CMAKE_SOURCE_DIR}/src/public/styles/*)
+
+file(GLOB_RECURSE JAVA_FILES ${CMAKE_SOURCE_DIR}/src/public/java/*)
+file(GLOB_RECURSE STYLE_FILES ${CMAKE_SOURCE_DIR}/src/public/styles/*)
 
 # Group files in Visual Studio
 source_group("Source Files" FILES ${FORUM_CORE_SRC})
@@ -44,15 +43,16 @@ source_group("Java" FILES ${JAVA_FILES})
 source_group("Style" FILES ${STYLE_FILES})
 
 # Create core static library
-add_library(SimpleForum_core STATIC ${FORUM_CORE_SRC} ${FORUM_HEADERS} ${ROUTE_FILES})
+add_library(SimpleForum_core STATIC ${FORUM_CORE_SRC})
+target_sources(SimpleForum_core PRIVATE ${FORUM_HEADERS} ${ROUTE_FILES})
 
 target_include_directories(SimpleForum_core PUBLIC
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/external/sqlite3
 )
 
-# Add template/public files to dummy target for visibility
-add_custom_target(Public SOURCES
+# Add template and public files to dummy target for IDE visibility only (no compilation)
+add_custom_target(public_files SOURCES
     ${TEMPLATE_FILES}
     ${JAVA_FILES}
     ${STYLE_FILES}
@@ -68,7 +68,7 @@ add_executable(SimpleForum ${SIMPLEFORUM_MAIN})
 # External dependencies via CPM
 include(FetchContent)
 
-set(CPM_SOURCE_CACHE "${CMAKE_SOURCE_DIR}/external/.cpm-cache" CACHE STRING "CPM package cache")
+set(CPM_SOURCE_CACHE "${CMAKE_SOURCE_DIR}/external/.cpm-cache")
 
 FetchContent_Declare(
   CPM
@@ -94,11 +94,11 @@ add_library(crow INTERFACE)
 target_include_directories(crow INTERFACE ${crow_SOURCE_DIR}/include)
 target_link_libraries(crow INTERFACE asio)
 
-# Link everything together
+# Link core library and Crow to main executable
 target_link_libraries(SimpleForum PRIVATE SimpleForum_core crow)
 
 if (WIN32)
-    target_link_libraries(SimpleForum PRIVATE SimpleForum_core ws2_32)
+    target_link_libraries(SimpleForum PRIVATE ws2_32)
 endif()
 
 # Enable optional unit tests
