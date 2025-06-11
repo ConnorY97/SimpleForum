@@ -61,6 +61,33 @@ bool ForumService::createForum(const std::string& title, const std::string& desc
     return true;
 }
 
+bool ForumService::updateForumById(int forumId, std::string username, const std::string& newTitle, const std::string& newDescription, std::string& error)
+{
+    const char* sql = "UPDATE forums SET title = ?, description = ? WHERE id = ? AND createdBy = ?;";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
+    {
+        error = sqlite3_errmsg(dataBase);
+        return false;
+    }
+
+    sqlite3_bind_text(stmt, 1, newTitle.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, newDescription.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt, 3, forumId);
+    sqlite3_bind_text(stmt, 4, username.c_str(), -1, SQLITE_TRANSIENT);
+
+    if (sqlite3_step(stmt) != SQLITE_DONE)
+    {
+        error = sqlite3_errmsg(dataBase);
+        sqlite3_finalize(stmt);
+        return false;
+    }
+
+    sqlite3_finalize(stmt);
+    return true;
+}
+
 bool ForumService::listForums(std::vector<Forum>& forums, std::string& error)
 {
     const char* sql = "SELECT id, title, description, createdBy, createdAt FROM forums;";

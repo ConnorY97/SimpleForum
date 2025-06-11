@@ -117,7 +117,8 @@ bool CommentService::updateCommentById(int commentId, std::string& username, con
     const char* sql = "UPDATE comments SET comment = ? WHERE id = ?;";
     sqlite3_stmt* stmt;
 
-    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
+    {
         error = sqlite3_errmsg(dataBase);
         return false;
     }
@@ -126,7 +127,8 @@ bool CommentService::updateCommentById(int commentId, std::string& username, con
     sqlite3_bind_int(stmt, 2, commentId);
     sqlite3_bind_text(stmt, 3, username.c_str(), -1, SQLITE_TRANSIENT);
 
-    if (sqlite3_step(stmt) != SQLITE_DONE) {
+    if (sqlite3_step(stmt) != SQLITE_DONE)
+    {
         error = sqlite3_errmsg(dataBase);
         sqlite3_finalize(stmt);
         return false;

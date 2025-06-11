@@ -80,6 +80,23 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
         return crow::response(200);
     });
 
+    // Edit post
+    CROW_ROUTE(app, "/forum/<int>/edit").methods("POST"_method)([&forumService](const crow::request& req, int forumId)
+    {
+        auto fields = parse_url_encoded(req.body);
+        std::string updatedPost = fields["updatedPost"];
+        std::string updatedDescription = fields["updatedDescription"];
+        std::string username = getUsernameFromCookie(req);
+
+        std::string error;
+        if (!forumService.updateForumById(forumId, username, updatedPost, updatedDescription, error))
+        {
+            return crow::response(400, error);
+        }
+
+        return crow::response(200);
+    });
+
     // Edit comments
     CROW_ROUTE(app, "/comment/<int>/edit").methods("POST"_method)
     ([&commentService](const crow::request& req, int commentId)
