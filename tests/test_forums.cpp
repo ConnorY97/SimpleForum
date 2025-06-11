@@ -51,7 +51,7 @@ TEST_CASE("Get Forum by ID succeeds with correct ID", "[ForumService]")
 	int id = 1;
 	REQUIRE(forumService.clearForums(error));
 	bool result = forumService.createForum("Test Title", "Test Description", "Test User", id, error);
-	
+
 	REQUIRE(result);
 	REQUIRE(error.empty());
 
@@ -81,4 +81,42 @@ TEST_CASE("Get Forum by ID fails with incorrect id", "[ForumService]")
 	REQUIRE_FALSE(result);
 	REQUIRE(error == "Forum not found");
 	REQUIRE_FALSE(id == forum.id);
+}
+
+TEST_CASE("Update Forum with correct Id", "[ForumService]")
+{
+		ForumService forumService;
+	std::string error;
+
+	REQUIRE(forumService.clearForums(error));
+
+	int id = 1;
+	bool result = forumService.createForum("Test Title", "Test Description", "Test User", id, error);
+
+	REQUIRE(result);
+	REQUIRE(error.empty());
+
+	result = forumService.updateForumById(id, "Test User", "New Title", "New description", error);
+
+	REQUIRE(result);
+	REQUIRE(error.empty());
+}
+
+TEST_CASE("Fail to update Forum with incorrect Id", "[ForumService]")
+{
+		ForumService forumService;
+	std::string error;
+
+	REQUIRE(forumService.clearForums(error));
+
+	int id = 1;
+	bool result = forumService.createForum("Test Title", "Test Description", "Test User", id, error);
+
+	REQUIRE(result);
+	REQUIRE(error.empty());
+
+	int incorrectId = 2;
+	result = forumService.updateForumById(incorrectId, "Test User", "New Title", "New description", error);
+
+	REQUIRE_FALSE(result);
 }

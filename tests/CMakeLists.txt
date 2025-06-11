@@ -31,7 +31,7 @@ target_include_directories(test_login PRIVATE
 )
 
 target_link_libraries(test_login PRIVATE
-  simpleforum_core
+  SimpleForum_core
   crow
   Catch2::Catch2WithMain
 )
@@ -41,7 +41,6 @@ catch_discover_tests(test_login
   PROPERTIES LABELS "UserTests"
 )
 
-# === test_forums ===
 add_executable(test_forums
   test_forums.cpp
 )
@@ -61,7 +60,6 @@ catch_discover_tests(test_forums
   PROPERTIES LABELS "ForumTests"
 )
 
-# === test_comments ===
 add_executable(test_comments
   test_comments.cpp
 )

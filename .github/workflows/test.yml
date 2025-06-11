@@ -22,10 +22,6 @@ jobs:
         shell: bash
         run: cmake -S . -B build -DBUILD_TESTS=ON
 
-      - name: Build
-        working-directory: build
-        run: cmake ..
-
       - name: Compile
         working-directory: build
         run: cmake --build .
