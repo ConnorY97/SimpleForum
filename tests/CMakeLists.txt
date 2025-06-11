@@ -50,7 +50,7 @@ target_include_directories(test_forums PRIVATE
 )
 
 target_link_libraries(test_forums PRIVATE
-  simpleforum_core
+  SimpleForum_core
   crow
   Catch2::Catch2WithMain
 )
@@ -69,7 +69,7 @@ target_include_directories(test_comments PRIVATE
 )
 
 target_link_libraries(test_comments PRIVATE
-  simpleforum_core
+  SimpleForum_core
   crow
   Catch2::Catch2WithMain
 )
