@@ -5,10 +5,11 @@
     <link rel="stylesheet" href="/public/styles/viewStyle.css">
 </head>
 <body>
-    <h1>{{title}}</h1>
-    <h2>{{description}}</h2>
-    <p class="post-meta">Posted by {{createdBy}} on {{createdAt}}</p>
-
+    <div class="post" , id="forum-{{id}}" data-created-at="{{createdAt}}">
+        <h1>{{title}}</h1>
+        <h2>{{description}}</h2>
+        <p class="post-meta">Posted by {{createdBy}} on {{createdAt}}</p>
+    </div>
     {{#canEditPost}}
         <p>This is your post</p>
     {{/canEditPost}}
@@ -21,8 +22,7 @@
 
         <div style="display: flex; gap: 0.5em; margin-top: 0.5em;">
             {{#canEditComment}}
-                <!-- Pass only the comment ID -->
-                <form onsubmit="return startEdit('{{id}}', '{{comment}}')">
+                <form onsubmit="return startCommentEdit('{{id}}', '{{comment}}')">
                     <input type="submit" value="Edit" class="edit-button">
                 </form>
                 <form onsubmit="return deleteComment(event, '{{id}}')">
@@ -37,7 +37,6 @@
     <p class="error">{{error}}</p>
     {{/error}}
 
-    <!-- Pass the forum or post id for adding comments -->
     <form onsubmit="return addComment(event, '{{id}}')">
         <input type="text" id="new-comment-input" name="comment" placeholder="Write a comment..." required>
         <input type="submit" value="Post">
