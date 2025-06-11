@@ -11,7 +11,9 @@
         <p class="post-meta">Posted by {{createdBy}} on {{createdAt}}</p>
     </div>
     {{#canEditPost}}
-        <p>This is your post</p>
+        <form onsubmit="return startPostEdit('{{id}}', '{{title}}', '{{description}}')">
+            <input type="submit" value="Edit" class="edit-button">
+        </form>
     {{/canEditPost}}
 
     <h3>Comments</h3>

@@ -13,6 +13,65 @@ function escapeSingleQuotes(str) {
     return typeof str === 'string' ? str.replace(/'/g, "\\'") : '';
 }
 
+function startPostEdit(forumId, originalPost, originalDescription) {
+    try {
+        const postDiv = document.getElementById(`forum-${forumId}`);
+        postDiv.innerHTML =
+            `
+                <form onsubmit="return submitCommentEdit(event, ${forumId})">
+                    <input type="text" id="edit-input-${forumId}-post" value="${originalPost}">
+                    <input type="text" id="edit-input-${forumId}-description" value="${originalDescription}">
+                    <input type="submit" value="Save" class="save">
+                </form>
+            `;
+        return false;
+    } catch (err) {
+        console.error("Error in startCommentEdit:", err);
+        alert("Error: " + err.message);
+    }
+}
+
+function submitPostEdit(event, forumId) {
+    event.preventDefault();
+
+    const postInput = document.getElementById(`edit-input-${forumId}-post`);
+    const updatePost = postInput.value;
+    const descriptionInput = document.getElementById(`edit-input-${forumId}-description`);
+    const updatedDescription = descriptionInput.value;
+
+    const postDiv = document.getElementById(`forum-${forumId}`);
+    const createdAt = postDiv.dataset.createdAt;
+    try {
+        fetch(`/comment/${forumId}/edit`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `updatedPost=${encodeURIComponent(updatedComment)}`
+            })
+            .then(res => {
+                if (res.ok) {
+                    commentDiv.innerHTML =
+                        `
+                    <p><strong>${getUsernameFromCookie()}</strong>: ${updatedComment}</p>
+                    <small>${createdAt}</small>
+                    <form onsubmit="return startCommentEdit(${commentId}, '${escapeSingleQuotes(updatedComment)}')">
+                        <input type="submit" value="Edit" class="edit-button">
+                    </form>
+                `;
+                }
+                else {
+                    alert("Failed to update comment.");
+                }
+            });
+
+        return false;
+    } catch (err) {
+        console.error("Error in submitCommentEdit:", err);
+        alert("Error: " + err.message);
+        return true;
+    }
+}
+
 function startCommentEdit(commentId, originalComment) {
     try {
         const commentDiv = document.getElementById(`comment-${commentId}`);
@@ -134,61 +193,3 @@ function deleteComment(event, commentId) {
     return false;
 }
 
-function startPostEdit(forumId, originalPost, originalDescription) {
-    try {
-        const postDiv = document.getElementById(`comment-${forumId}`);
-        commentDiv.innerHTML =
-            `
-                <form onsubmit="return submitCommentEdit(event, ${forumId})">
-                    <input type="text" id="edit-input-${forumId}-post" value="${originalPost}">
-                    <input type="text" id="edit-input-${forumId}-description" value="${originalDescription}">
-                    <input type="submit" value="Save" class="save">
-                </form>
-            `;
-        return false;
-    } catch (err) {
-        console.error("Error in startCommentEdit:", err);
-        alert("Error: " + err.message);
-    }
-}
-
-function submitPostEdit(event, forumId) {
-    event.preventDefault();
-
-    const postInput = document.getElementById(`edit-input-${forumId}-post`);
-    const updatePost = postInput.value;
-    const descriptionInput = document.getElementById(`edit-input-${forumId}-description`);
-    const updatedDescription = descriptionInput.value;
-
-    const postDiv = document.getElementById(`forum-${forumId}`);
-    const createdAt = postDiv.dataset.createdAt;
-    try {
-        fetch(`/comment/${forumId}/edit`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `updatedPost=${encodeURIComponent(updatedComment)}`
-            })
-            .then(res => {
-                if (res.ok) {
-                    commentDiv.innerHTML =
-                        `
-                    <p><strong>${getUsernameFromCookie()}</strong>: ${updatedComment}</p>
-                    <small>${createdAt}</small>
-                    <form onsubmit="return startCommentEdit(${commentId}, '${escapeSingleQuotes(updatedComment)}')">
-                        <input type="submit" value="Edit" class="edit-button">
-                    </form>
-                `;
-                }
-                else {
-                    alert("Failed to update comment.");
-                }
-            });
-
-        return false;
-    } catch (err) {
-        console.error("Error in submitCommentEdit:", err);
-        alert("Error: " + err.message);
-        return true;
-    }
-}
