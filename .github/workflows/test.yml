@@ -47,6 +47,7 @@ jobs:
       - name: Upload Results
         uses: dorny/test-reporter@v2
         with:
+            fail-on-error: "false"
             fail-on-empty: "false"
             name: Test Results
             path: "build/*.xml"

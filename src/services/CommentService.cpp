@@ -114,7 +114,7 @@ bool CommentService::getCommentById(int commentId, Comment& comment, std::string
 
 bool CommentService::updateCommentById(int commentId, std::string& username, const std::string& newText, std::string& error)
 {
-    const char* sql = "UPDATE comments SET comment = ? WHERE id = ? AND createdBy = ?;";
+    const char* sql = "UPDATE comments SET comment = ? WHERE id = ? AND username = ?;";
     sqlite3_stmt* stmt;
 
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)

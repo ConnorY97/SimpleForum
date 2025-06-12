@@ -92,12 +92,12 @@ TEST_CASE("Edit a comment", "[CommentServices]")
 
 	int commentId;
 	std::string originalComment = "Test comment";
-	result = commentService.addComment(forumId, "TestUser", originalComment, commentId, error);
+	std::string user = "TestUser";
+	result = commentService.addComment(forumId, user, originalComment, commentId, error);
 
 	REQUIRE(result);
 	REQUIRE(error.empty());
 
-	std::string user;
 	std::string updateComment = "Updated comment";
 	result = commentService.updateCommentById(commentId, user, updateComment, error);
 
