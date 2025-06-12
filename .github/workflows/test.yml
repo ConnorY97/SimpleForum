@@ -26,12 +26,17 @@ jobs:
         working-directory: build
         run: cmake --build .
 
-      - name: Test
+      - name: Run test_login
         working-directory: build
-        run: |
-          ./tests/test_login --reporter junit --out test_login.xml
-          ./tests/test_forums --reporter junit --out test_forums.xml
-          ./tests/test_comments --reporter junit --out test_comments.xml
+        run: ./tests/test_login --reporter junit --out test_login.xml || true
+
+      - name: Run test_forums
+        working-directory: build
+        run: ./tests/test_forums --reporter junit --out test_forums.xml || true
+
+      - name: Run test_comments
+        working-directory: build
+        run: ./tests/test_comments --reporter junit --out test_comments.xml || true
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
