@@ -114,7 +114,7 @@ bool CommentService::getCommentById(int commentId, Comment& comment, std::string
 
 bool CommentService::updateCommentById(int commentId, std::string& username, const std::string& newText, std::string& error)
 {
-    const char* sql = "UPDATE comments SET comment = ? WHERE id = ?;";
+    const char* sql = "UPDATE comments SET comment = ? WHERE id = ? AND createdBy = ?;";
     sqlite3_stmt* stmt;
 
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
@@ -134,9 +134,18 @@ bool CommentService::updateCommentById(int commentId, std::string& username, con
         return false;
     }
 
+    int changes = sqlite3_changes(dataBase);
     sqlite3_finalize(stmt);
+
+    if (changes == 0)
+    {
+        error = "No comment updated. You may not be the owner or the comment does not exist.";
+        return false;
+    }
+
     return true;
 }
+
 
 bool CommentService::deleteCommentById(int commentId, std::string& error)
 {

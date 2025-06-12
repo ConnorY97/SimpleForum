@@ -13,9 +13,10 @@ TEST_CASE("Create a new comment", "[CommentService]")
 	REQUIRE(commentService.clearComments(error));
 
 	int forumId = 1;
+	int commentId = 2;
 	std::string user = "Test";
 
-	bool result = commentService.addComment(forumId, user, "This is a new comment", error);
+	bool result = commentService.addComment(forumId, user, "This is a new comment", commentId, error);
 
 	REQUIRE(result);
 	REQUIRE(error.empty());

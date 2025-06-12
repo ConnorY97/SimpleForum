@@ -84,9 +84,18 @@ bool ForumService::updateForumById(int forumId, std::string username, const std:
         return false;
     }
 
+    int changes = sqlite3_changes(dataBase);
     sqlite3_finalize(stmt);
+
+    if (changes == 0)
+    {
+        error = "No forum updated. You may not be the owner or the forum does not exist.";
+        return false;
+    }
+
     return true;
 }
+
 
 bool ForumService::listForums(std::vector<Forum>& forums, std::string& error)
 {
