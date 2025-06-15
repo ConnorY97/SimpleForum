@@ -19,12 +19,14 @@ file(COPY ${CMAKE_SOURCE_DIR}/src/public DESTINATION ${CMAKE_BINARY_DIR})
 file(GLOB_RECURSE FORUM_CORE_SRC
     ${CMAKE_SOURCE_DIR}/src/services/*.cpp
     ${CMAKE_SOURCE_DIR}/src/utils/*.cpp
+    ${CMAKE_SOURCE_DIR}/src/managers/*.cpp
     ${CMAKE_SOURCE_DIR}/external/sqlite3/sqlite3.c
 )
 
 file(GLOB_RECURSE FORUM_HEADERS
     ${CMAKE_SOURCE_DIR}/src/services/*.h
     ${CMAKE_SOURCE_DIR}/src/utils/*.h
+    ${CMAKE_SOURCE_DIR}/src/managers/*.h
 )
 
 # Templates, routes, and public files for IDE visibility

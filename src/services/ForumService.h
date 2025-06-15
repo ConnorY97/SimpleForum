@@ -4,6 +4,8 @@
 #include <vector>
 #include "iostream"
 #include "../utils/ForumUtils.h"
+#include "../utils/LoggerUtilities.h"
+#include "../managers/DatabaseManager.h"
 
 class ForumService
 {

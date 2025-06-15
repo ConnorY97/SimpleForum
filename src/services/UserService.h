@@ -4,6 +4,8 @@
 #include <mutex>
 #include <string>
 #include <iostream>
+#include "../utils/LoggerUtilities.h"
+#include "../managers/DatabaseManager.h"
 
 class UserService
 {

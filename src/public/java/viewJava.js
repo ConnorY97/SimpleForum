@@ -67,8 +67,6 @@ function submitPostEdit(event, forumId) {
     }
 }
 
-
-
 function startCommentEdit(commentId, originalComment) {
     try {
         const commentDiv = document.getElementById(`comment-${commentId}`);
@@ -189,4 +187,3 @@ function deleteComment(event, commentId) {
 
     return false;
 }
-

@@ -2,8 +2,11 @@
 
 UserService::UserService()
 {
-    if (sqlite3_open("user.db", &dataBase)) {
-        std::cerr << "Can't open DB: " << sqlite3_errmsg(dataBase) << std::endl;
+    dataBase = DatabaseManager::getInstance().getConnection();
+    if (!dataBase)
+    {
+        LOGERROR("Failed to initialize connection with databse");
+        return;
     }
 
     const char* create_table_sql =
@@ -18,7 +21,7 @@ UserService::UserService()
         sqlite3_free(errMsg);
     }
 
-    std::cout << "Initialized User Database" << std::endl;
+    LOGINFO("User Database Establised");
 }
 
 UserService::~UserService()

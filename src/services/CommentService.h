@@ -4,6 +4,8 @@
 #include <vector>
 #include "iostream"
 #include "../utils/CommentUtils.h"
+#include "../managers/DatabaseManager.h"
+#include "../utils/LoggerUtilities.h"
 
 class CommentService
 {

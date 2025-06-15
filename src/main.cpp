@@ -20,6 +20,7 @@ int main() {
     ForumService forumService;
     CommentService commentService;
 
+
     setUpStaticRoutes(app);
     setupHomeRoutes(app);
     setupRegisterRoutes(app, userService);
