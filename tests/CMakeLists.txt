@@ -21,6 +21,8 @@ CPMAddPackage(
 list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
 include(Catch)
 
+set(TESTS_SHARED_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/sharedData)
+
 # === test_login ===
 add_executable(test_login
   test_login.cpp
@@ -28,6 +30,7 @@ add_executable(test_login
 
 target_include_directories(test_login PRIVATE
   ${CMAKE_SOURCE_DIR}/src
+  ${TESTS_SHARED_INCLUDE_DIR}
 )
 
 target_link_libraries(test_login PRIVATE
@@ -47,6 +50,7 @@ add_executable(test_forums
 
 target_include_directories(test_forums PRIVATE
   ${CMAKE_SOURCE_DIR}/src
+  ${TESTS_SHARED_INCLUDE_DIR}
 )
 
 target_link_libraries(test_forums PRIVATE
@@ -66,6 +70,7 @@ add_executable(test_comments
 
 target_include_directories(test_comments PRIVATE
   ${CMAKE_SOURCE_DIR}/src
+  ${TESTS_SHARED_INCLUDE_DIR}
 )
 
 target_link_libraries(test_comments PRIVATE

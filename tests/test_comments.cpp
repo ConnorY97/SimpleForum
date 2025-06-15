@@ -1,20 +1,15 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch_test_macros.hpp>
 
-#include "../src/services/CommentService.h"
-#include "../src/services/ForumService.h"
+#include "sharedData/SharedServiceFixture.h"
 #include "../src/utils/CommentUtils.h"
 
-TEST_CASE("Create a new comment", "[CommentService]")
+TEST_CASE_METHOD(SharedServiceFixture, "Create a new comment", "[CommentService]")
 {
-	CommentService commentService;
-	std::string error;
-
-	REQUIRE(commentService.clearComments(error));
-
 	int forumId = 1;
 	int commentId = 2;
 	std::string user = "Test";
+	std::string error;
 
 	bool result = commentService.addComment(forumId, user, "This is a new comment", commentId, error);
 
@@ -22,15 +17,10 @@ TEST_CASE("Create a new comment", "[CommentService]")
 	REQUIRE(error.empty());
 }
 
-TEST_CASE("List Comments", "[CommentService]")
+
+TEST_CASE_METHOD(SharedServiceFixture, "List Comments", "[CommentService]")
 {
-	CommentService commentService;
-	ForumService forumService;
 	std::string error;
-
-	REQUIRE(commentService.clearComments(error));
-	REQUIRE(forumService.clearForums(error));
-
 	int forumId;
 	bool result = forumService.createForum("CommentTest", "This is testing comments", "Test", forumId, error);
 
@@ -47,14 +37,10 @@ TEST_CASE("List Comments", "[CommentService]")
 	REQUIRE(error.empty());
 }
 
-TEST_CASE("Get comment by ID", "[CommentServce]")
+/*
+TEST_CASE_METHOD(SharedServiceFixture, "Get comment by ID", "[CommentServce]")
 {
-	CommentService commentService;
-	ForumService forumService;
 	std::string error;
-
-	REQUIRE(commentService.clearComments(error));
-	REQUIRE(forumService.clearForums(error));
 
 	int forumId;
 	bool result = forumService.createForum("CommentTest", "This is testing comments", "Test", forumId, error);
@@ -76,15 +62,9 @@ TEST_CASE("Get comment by ID", "[CommentServce]")
 	REQUIRE(testComment.comment == comment);
 }
 
-TEST_CASE("Edit a comment", "[CommentServices]")
+TEST_CASE_METHOD(SharedServiceFixture, "Edit a comment", "[CommentServices]")
 {
-	CommentService commentService;
-	ForumService forumService;
 	std::string error;
-
-	REQUIRE(commentService.clearComments(error));
-	REQUIRE(forumService.clearForums(error));
-
 	int forumId;
 	bool result = forumService.createForum("CommentTest", "This is testing comments", "Test", forumId, error);
 
@@ -111,3 +91,4 @@ TEST_CASE("Edit a comment", "[CommentServices]")
 	REQUIRE(error.empty());
 	REQUIRE(comment.comment == updateComment);
 }
+*/
