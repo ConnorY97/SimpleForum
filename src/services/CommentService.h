@@ -11,7 +11,6 @@ class CommentService
 {
 public:
     CommentService();
-    ~CommentService();
 
     bool addComment(int forumId, const std::string& username, const std::string& commentText, int& commentId, std::string& error);
 
@@ -24,6 +23,4 @@ public:
     bool deleteCommentById(int commentId, std::string& error);
 
     bool clearComments(std::string& error);
-private:
-    sqlite3* dataBase;
 };

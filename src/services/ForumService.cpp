@@ -3,13 +3,13 @@
 // Constructor - Opens the SQLite database and ensures the forums table exists
 ForumService::ForumService()
 {
-    // Attempt to open the SQLite database file "forum.db"
-    dataBase = DatabaseManager::getInstance().getConnection();
-    if (!dataBase)
-    {
-        LOGERROR("Failed to initialize connection with databse");
+    DatabaseManager::ScopedConnection conn;
+    if (!conn.isValid()) {
+        LOGERROR("DB connection failed");
         return;
     }
+
+    sqlite3* dataBase = conn.get();
 
     // SQL statement to create the forums table if it doesn't already exist
     const char* create_forums_sql =
@@ -30,19 +30,19 @@ ForumService::ForumService()
     }
 
     LOGINFO("Forums Database Establised");
-}
-
-// Destructor - Closes the database connection when the service is destroyed
-ForumService::~ForumService()
-{
-    if (dataBase) {
-        sqlite3_close(dataBase);
-    }
-}
+} 
 
 // Creates a new forum and returns its ID
 bool ForumService::createForum(const std::string& title, const std::string& description, const std::string& createdBy, int& forumId, std::string& error)
 {
+    DatabaseManager::ScopedConnection conn;
+    if (!conn.isValid()) {
+        LOGERROR("DB connection failed");
+        return false;
+    }
+
+    sqlite3* dataBase = conn.get();
+
     // SQL insert statement with datetime now
     const char* sql =
         "INSERT INTO forums (title, description, createdBy, createdAt) VALUES (?, ?, ?, datetime('now'));";
@@ -77,6 +77,14 @@ bool ForumService::createForum(const std::string& title, const std::string& desc
 // Updates a forum if the requesting user is the creator
 bool ForumService::updateForumById(int forumId, std::string username, const std::string& newTitle, const std::string& newDescription, std::string& error)
 {
+    DatabaseManager::ScopedConnection conn;
+    if (!conn.isValid()) {
+        LOGERROR("DB connection failed");
+        return false;
+    }
+
+    sqlite3* dataBase = conn.get();
+
     const char* sql = "UPDATE forums SET title = ?, description = ? WHERE id = ? AND createdBy = ?;";
     sqlite3_stmt* stmt;
 
@@ -117,6 +125,14 @@ bool ForumService::updateForumById(int forumId, std::string username, const std:
 // Retrieves all forums and stores them in the provided vector
 bool ForumService::listForums(std::vector<Forum>& forums, std::string& error)
 {
+    DatabaseManager::ScopedConnection conn;
+    if (!conn.isValid()) {
+        LOGERROR("DB connection failed");
+        return false;
+    }
+
+    sqlite3* dataBase = conn.get();
+
     const char* sql = "SELECT id, title, description, createdBy, createdAt FROM forums;";
     sqlite3_stmt* stmt;
 
@@ -146,6 +162,14 @@ bool ForumService::listForums(std::vector<Forum>& forums, std::string& error)
 // Retrieves a specific forum by ID
 bool ForumService::getForumById(int id, Forum& forum, std::string& error)
 {
+    DatabaseManager::ScopedConnection conn;
+    if (!conn.isValid()) {
+        LOGERROR("DB connection failed");
+        return false;
+    }
+
+    sqlite3* dataBase = conn.get();
+
     const char* sql = "SELECT id, title, description, createdBy, createdAt FROM forums WHERE id = ?;";
     sqlite3_stmt* stmt;
 
@@ -180,6 +204,14 @@ bool ForumService::getForumById(int id, Forum& forum, std::string& error)
 // Deletes all forums from the database (useful for testing or admin tools)
 bool ForumService::clearForums(std::string& error)
 {
+    DatabaseManager::ScopedConnection conn;
+    if (!conn.isValid()) {
+        LOGERROR("DB connection failed");
+        return false;
+    }
+
+    sqlite3* dataBase = conn.get();
+
     const char* sql = "DELETE FROM forums";
     char* errMsg = nullptr;
 

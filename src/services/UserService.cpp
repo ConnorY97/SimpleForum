@@ -2,12 +2,14 @@
 
 UserService::UserService()
 {
-    dataBase = DatabaseManager::getInstance().getConnection();
-    if (!dataBase)
-    {
-        LOGERROR("Failed to initialize connection with databse");
+    DatabaseManager::ScopedConnection conn;
+    if (!conn.isValid()) {
+        LOGERROR("DB connection failed");
         return;
     }
+
+    sqlite3* dataBase = conn.get();
+
 
     const char* create_table_sql =
         "CREATE TABLE IF NOT EXISTS users ("
@@ -24,16 +26,16 @@ UserService::UserService()
     LOGINFO("User Database Establised");
 }
 
-UserService::~UserService()
-{
-    if (dataBase != nullptr)
-    {
-        sqlite3_close(dataBase);
-    }
-}
-
 bool UserService::registerUser(const std::string& username, const std::string& password, std::string& error)
 {
+    DatabaseManager::ScopedConnection conn;
+    if (!conn.isValid()) {
+        LOGERROR("DB connection failed");
+        return false;
+    }
+
+    sqlite3* dataBase = conn.get();
+
     const char* sql = "INSERT INTO users (username, password) VALUES (?, ?);";
     sqlite3_stmt* stmt;
 
@@ -57,6 +59,14 @@ bool UserService::registerUser(const std::string& username, const std::string& p
 
 bool UserService::registerUser(const std::string& username, const std::string& password, std::string& confirmPassword, std::string& error)
 {
+    DatabaseManager::ScopedConnection conn;
+    if (!conn.isValid()) {
+        LOGERROR("DB connection failed");
+        return false;
+    }
+
+    sqlite3* dataBase = conn.get();
+
     if (password != confirmPassword)
     {
         error = "Passwords do not mactch!";
@@ -86,6 +96,14 @@ bool UserService::registerUser(const std::string& username, const std::string& p
 
 bool UserService::loginUser(const std::string& username, const std::string& password, std::string& error)
 {
+    DatabaseManager::ScopedConnection conn;
+    if (!conn.isValid()) {
+        LOGERROR("DB connection failed");
+        return false;
+    }
+
+    sqlite3* dataBase = conn.get();
+
     if (username.empty() || password.empty()) {
         error = "Missing username or password";
         return false;
@@ -124,6 +142,14 @@ bool UserService::loginUser(const std::string& username, const std::string& pass
 
 bool UserService::clearUsers(std::string& error)
 {
+    DatabaseManager::ScopedConnection conn;
+    if (!conn.isValid()) {
+        LOGERROR("DB connection failed");
+        return false;
+    }
+
+    sqlite3* dataBase = conn.get();
+
     const char* sql = "DELETE FROM users;";
     char* errMsg = nullptr;
 

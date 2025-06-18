@@ -11,7 +11,6 @@ class UserService
 {
 public:
     UserService();
-    ~UserService();
 
     bool registerUser(const std::string& username, const std::string& password, std::string& error);
     bool registerUser(const std::string& username, const std::string& password, std::string& confirmPassword, std::string& error);
@@ -22,5 +21,4 @@ public:
 private:
     std::unordered_map<std::string, std::string> users_;
     std::mutex mutex_;
-    sqlite3* dataBase = nullptr;
 };

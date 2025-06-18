@@ -1,124 +1,143 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch_test_macros.hpp>
 
-#include "../src/services/ForumService.h"
-#include "../src/utils/ForumUtils.h"
+#include "sharedData/SharedServiceFixture.h"
 
-TEST_CASE("Create a new forum successfully", "[ForumService]")
+TEST_CASE_METHOD(SharedServiceFixture, "Create a new forum successfully", "[ForumService]")
 {
-	ForumService forumService;
-	std::string error;
+    std::string error;
+    REQUIRE(forumService.clearForums(error));
 
-	REQUIRE(forumService.clearForums(error));
+    int id = 1;
+    bool result = forumService.createForum("Test Title", "Test Description", "Test User", id, error);
 
-	int id = 1;
-	bool result = forumService.createForum("Test Title", "Test Description", "Test User", id, error);
+    REQUIRE(result);
+    REQUIRE(error.empty());
 
-	REQUIRE(result);
-	REQUIRE(error.empty());
+    Forum forum;
+    result = forumService.getForumById(id, forum, error);
+    REQUIRE(result);
+    REQUIRE(forum.title == "Test Title");
+    REQUIRE(forum.description == "Test Description");
+    REQUIRE(forum.createdBy == "Test User");
 }
 
-TEST_CASE("List forums", "[ForumService]")
+TEST_CASE_METHOD(SharedServiceFixture, "List multiple forums", "[ForumService]")
 {
-	ForumService forumService;
-	std::string error;
-	int forumAmount = 5;
+    std::string error;
+    int forumAmount = 5;
 
-	REQUIRE(forumService.clearForums(error));
+    REQUIRE(forumService.clearForums(error));
 
-	for (int i = 0; i < forumAmount; i++)
-	{
-		int forumId;
-		bool result = forumService.createForum("Test Title", "Test Description", "Test User", forumId, error);
+    for (int i = 0; i < forumAmount; i++)
+    {
+        int forumId;
+        bool result = forumService.createForum("Title " + std::to_string(i), "Description", "User", forumId, error);
+        REQUIRE(result);
+    }
 
-		REQUIRE(result);
-		REQUIRE(error.empty());
-	}
-
-	std::vector<Forum> forums;
-	bool result = forumService.listForums(forums, error);
-
-	REQUIRE(result);
-	REQUIRE(error.empty());
-	REQUIRE(forums.size() == forumAmount);
+    std::vector<Forum> forums;
+    bool result = forumService.listForums(forums, error);
+    REQUIRE(result);
+    REQUIRE(forums.size() == forumAmount);
 }
 
-TEST_CASE("Get Forum by ID succeeds with correct ID", "[ForumService]")
+TEST_CASE_METHOD(SharedServiceFixture, "List forums when empty", "[ForumService]")
 {
-	ForumService forumService;
-	std::string error;
+    std::string error;
+    REQUIRE(forumService.clearForums(error));
 
-	int id = 1;
-	REQUIRE(forumService.clearForums(error));
-	bool result = forumService.createForum("Test Title", "Test Description", "Test User", id, error);
+    std::vector<Forum> forums;
+    bool result = forumService.listForums(forums, error);
 
-	REQUIRE(result);
-	REQUIRE(error.empty());
-
-	Forum forum;
-	result = forumService.getForumById(id, forum, error);
-
-	REQUIRE(result);
-	REQUIRE(error.empty());
-	REQUIRE(id == forum.id);
+    REQUIRE(result);
+    REQUIRE(forums.empty());
 }
 
-TEST_CASE("Get Forum by ID fails with incorrect id", "[ForumService]")
+TEST_CASE_METHOD(SharedServiceFixture, "Get forum by valid ID", "[ForumService]")
 {
-	ForumService forumService;
-	std::string error;
+    std::string error;
+    REQUIRE(forumService.clearForums(error));
 
-	int id = 1;
-	REQUIRE(forumService.clearForums(error));
-	bool result = forumService.createForum("Test Title", "Test Description", "Test User", id, error);
+    int id;
+    REQUIRE(forumService.createForum("Title", "Desc", "User", id, error));
 
-	REQUIRE(result);
-	REQUIRE(error.empty());
-
-	Forum forum;
-	result = forumService.getForumById(id + 1, forum, error);
-
-	REQUIRE_FALSE(result);
-	REQUIRE(error == "Forum not found");
-	REQUIRE_FALSE(id == forum.id);
+    Forum forum;
+    REQUIRE(forumService.getForumById(id, forum, error));
+    REQUIRE(forum.id == id);
 }
 
-TEST_CASE("Update Forum with correct Id", "[ForumService]")
+TEST_CASE_METHOD(SharedServiceFixture, "Get forum by invalid ID returns error", "[ForumService]")
 {
-	ForumService forumService;
-	std::string error;
+    std::string error;
+    REQUIRE(forumService.clearForums(error));
 
-	REQUIRE(forumService.clearForums(error));
+    int id;
+    REQUIRE(forumService.createForum("Title", "Desc", "User", id, error));
 
-	int id = 1;
-	bool result = forumService.createForum("Test Title", "Test Description", "Test User", id, error);
-
-	REQUIRE(result);
-	REQUIRE(error.empty());
-
-	result = forumService.updateForumById(id, "Test User", "New Title", "New description", error);
-
-	REQUIRE(result);
-	REQUIRE(error.empty());
+    Forum forum;
+    REQUIRE_FALSE(forumService.getForumById(id + 99, forum, error));
+    REQUIRE(error == "Forum not found");
 }
 
-TEST_CASE("Fail to update Forum with incorrect username", "[ForumService]")
+TEST_CASE_METHOD(SharedServiceFixture, "Update forum with correct ID and user", "[ForumService]")
 {
-	ForumService forumService;
-	std::string error;
+    std::string error;
+    REQUIRE(forumService.clearForums(error));
 
-	REQUIRE(forumService.clearForums(error));
+    int id;
+    REQUIRE(forumService.createForum("Old Title", "Old Desc", "TestUser", id, error));
 
-	int id = 1;
-	std::string username = "TestUser";
-	bool result = forumService.createForum("Test Title", "Test Description", username, id, error);
+    REQUIRE(forumService.updateForumById(id, "TestUser", "New Title", "New Desc", error));
 
-	REQUIRE(result);
-	REQUIRE(error.empty());
+    Forum updated;
+    REQUIRE(forumService.getForumById(id, updated, error));
+    REQUIRE(updated.title == "New Title");
+    REQUIRE(updated.description == "New Desc");
+}
 
-	std::string incorrectUsername = "IncorrectUser";
-	result = forumService.updateForumById(id, incorrectUsername, "New Title", "New description", error);
+TEST_CASE_METHOD(SharedServiceFixture, "Update forum with wrong username fails", "[ForumService]")
+{
+    std::string error;
+    REQUIRE(forumService.clearForums(error));
 
-	REQUIRE_FALSE(result);
-	REQUIRE_FALSE(error.empty());
+    int id;
+    REQUIRE(forumService.createForum("Title", "Desc", "CorrectUser", id, error));
+
+    REQUIRE_FALSE(forumService.updateForumById(id, "WrongUser", "Should Not Work", "Nope", error));
+    REQUIRE_FALSE(error.empty());
+}
+
+TEST_CASE_METHOD(SharedServiceFixture, "Update non-existent forum fails", "[ForumService]")
+{
+    std::string error;
+    REQUIRE(forumService.clearForums(error));
+
+    REQUIRE_FALSE(forumService.updateForumById(999, "User", "Title", "Desc", error));
+    REQUIRE_FALSE(error.empty());
+}
+
+TEST_CASE_METHOD(SharedServiceFixture, "Creating a forum with empty title or description fails gracefully", "[ForumService]")
+{
+    std::string error;
+    REQUIRE(forumService.clearForums(error));
+
+    int id;
+    REQUIRE_FALSE(forumService.createForum("", "Desc", "User", id, error));
+    REQUIRE_FALSE(error.empty());
+
+    REQUIRE_FALSE(forumService.createForum("Title", "", "User", id, error));
+    REQUIRE_FALSE(error.empty());
+}
+
+TEST_CASE_METHOD(SharedServiceFixture, "Duplicate forums are allowed if titles are the same", "[ForumService]")
+{
+    std::string error;
+    REQUIRE(forumService.clearForums(error));
+
+    int id1, id2;
+    REQUIRE(forumService.createForum("SameTitle", "Desc1", "User1", id1, error));
+    REQUIRE(forumService.createForum("SameTitle", "Desc2", "User2", id2, error));
+
+    REQUIRE(id1 != id2);
 }

@@ -1,11 +1,10 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch_test_macros.hpp>
 
-#include "../src/services/UserService.h"
+#include "sharedData/SharedServiceFixture.h"
 
-TEST_CASE("Register a new user successfully", "[UserService]")
+TEST_CASE_METHOD(SharedServiceFixture, "Register a new user successfully", "[UserService]")
 {
-    UserService userService;
     std::string error;
 
     REQUIRE(userService.clearUsers(error));
@@ -15,9 +14,8 @@ TEST_CASE("Register a new user successfully", "[UserService]")
     REQUIRE(error.empty());
 }
 
-TEST_CASE("Register duplicate username fails", "[UserService]")
+TEST_CASE_METHOD(SharedServiceFixture, "Register duplicate username fails", "[UserService]")
 {
-    UserService userService;
     std::string error;
 
     REQUIRE(userService.clearUsers(error));
@@ -30,9 +28,8 @@ TEST_CASE("Register duplicate username fails", "[UserService]")
     REQUIRE(error.find("UNIQUE") != std::string::npos);
 }
 
-TEST_CASE("Login succeeds with correct credentials", "[UserService]")
+TEST_CASE_METHOD(SharedServiceFixture, "Login succeeds with correct credentials", "[UserService]")
 {
-    UserService userService;
     std::string error;
 
     REQUIRE(userService.clearUsers(error));
@@ -45,9 +42,8 @@ TEST_CASE("Login succeeds with correct credentials", "[UserService]")
     REQUIRE(error.empty());
 }
 
-TEST_CASE("Login fails with wrong password", "[UserService]")
+TEST_CASE_METHOD(SharedServiceFixture, "Login fails with wrong password", "[UserService]")
 {
-    UserService userService;
     std::string error;
 
     REQUIRE(userService.clearUsers(error));
@@ -60,9 +56,8 @@ TEST_CASE("Login fails with wrong password", "[UserService]")
     REQUIRE(error == "Password is incorrect");
 }
 
-TEST_CASE("Login fails if username doesn't exist", "[UserService]")
+TEST_CASE_METHOD(SharedServiceFixture, "Login fails if username doesn't exist", "[UserService]")
 {
-    UserService userService;
     std::string error;
 
     REQUIRE(userService.clearUsers(error));
@@ -72,9 +67,8 @@ TEST_CASE("Login fails if username doesn't exist", "[UserService]")
     REQUIRE(error == "Username does not exist");
 }
 
-TEST_CASE("Login fails with empty username", "[UserService]")
+TEST_CASE_METHOD(SharedServiceFixture, "Login fails with empty username", "[UserService]")
 {
-    UserService userService;
     std::string error;
 
     REQUIRE(userService.clearUsers(error));
@@ -84,9 +78,8 @@ TEST_CASE("Login fails with empty username", "[UserService]")
     REQUIRE(error == "Missing username or password");
 }
 
-TEST_CASE("Login fails with empty password", "[UserService]")
+TEST_CASE_METHOD(SharedServiceFixture, "Login fails with empty password", "[UserService]")
 {
-    UserService userService;
     std::string error;
 
     REQUIRE(userService.clearUsers(error));

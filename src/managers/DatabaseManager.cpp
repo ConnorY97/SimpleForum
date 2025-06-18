@@ -1,39 +1,33 @@
 #include "DatabaseManager.h"
-#include <iostream>
 
-DatabaseManager::DatabaseManager()
-{
-    if (sqlite3_open("SimpleForum.db", &db))
-    {
-        LOGERROR("Failed to open SimpleForum.db: " + std::string(sqlite3_errmsg(db)));
-        db = nullptr;
-    } else
-    {
-        LOGINFO("Database connection established.");
-    }
-}
+DatabaseManager::DatabaseManager() {}
 
-DatabaseManager::~DatabaseManager()
-{
-    closeConnection();
-}
-
-DatabaseManager& DatabaseManager::getInstance()
-{
+DatabaseManager& DatabaseManager::getInstance() {
     static DatabaseManager instance;
     return instance;
 }
 
-sqlite3* DatabaseManager::getConnection()
-{
+DatabaseManager::ScopedConnection::ScopedConnection() {
+    if (sqlite3_open("SimpleForum.db", &db) != SQLITE_OK) {
+        LOGERROR("Failed to open DB: " + std::string(sqlite3_errmsg(db)));
+        db = nullptr;
+    }
+    else {
+        LOGINFO("Database connection opened.");
+    }
+}
+
+DatabaseManager::ScopedConnection::~ScopedConnection() {
+    if (db) {
+        sqlite3_close(db);
+        LOGINFO("Database connection closed.");
+    }
+}
+
+sqlite3* DatabaseManager::ScopedConnection::get() {
     return db;
 }
 
-void DatabaseManager::closeConnection()
-{
-    if (db) {
-        sqlite3_close(db);
-        db = nullptr;
-        LOGINFO("Database closed");
-    }
+bool DatabaseManager::ScopedConnection::isValid() const {
+    return db != nullptr;
 }

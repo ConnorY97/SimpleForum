@@ -9,16 +9,24 @@ class DatabaseManager
 {
 public:
     static DatabaseManager& getInstance();
-    sqlite3* getConnection();
-    void closeConnection();
+
+    // Use this in services to get a scoped DB connection
+    class ScopedConnection {
+    public:
+        ScopedConnection();
+        ~ScopedConnection();
+
+        sqlite3* get();
+        bool isValid() const;
+
+    private:
+        sqlite3* db;
+    };
 
 private:
-    DatabaseManager(); // private constructor
-    ~DatabaseManager();
+    DatabaseManager();
     DatabaseManager(const DatabaseManager&) = delete;
     DatabaseManager& operator=(const DatabaseManager&) = delete;
-
-    sqlite3* db;
 };
 
 #endif // DATABASE_MANAGER_H
