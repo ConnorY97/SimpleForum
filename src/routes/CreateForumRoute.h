@@ -14,6 +14,7 @@ inline void setupCreateForumRoutes(crow::SimpleApp& app, ForumService& forumServ
         }
 
         crow::mustache::context ctx({ {"error", errorMsg} });
+        LOGERROR(errorMsg);
         auto page = crow::mustache::load("createForum.html").render(ctx);
         return crow::response{ page };
     });
@@ -31,11 +32,13 @@ inline void setupCreateForumRoutes(crow::SimpleApp& app, ForumService& forumServ
         {
             crow::response res(302);
             res.set_header("Location", "/create-forum?error=" + url_encode("Failed to create forum, try again later"));
+            LOGERROR(error);
             return res;
         }
 
         crow::response res(302);
         res.set_header("Location", "/forum/" + std::to_string(forumId));
+        LOGINFO(username + " created new forum/" + std::to_string(forumId));
         return res;
     });
 }

@@ -106,7 +106,7 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
             return crow::response(400, error);
         }
 
-        LOGINFO(username + " editted forum/" + std::to_string(forumId));
+        LOGINFO(username + " edited forum/" + std::to_string(forumId));
         return crow::response(200);
     });
 
@@ -125,7 +125,7 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
             return crow::response(400, error);
         }
 
-        LOGINFO(username + " editted comment");
+        LOGINFO(username + " edited comment");
         return crow::response(200);
     });
 
