@@ -15,12 +15,14 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
         Forum forum;
         if (!forumService.getForumById(forumId, forum, error))
         {
+            LOGERROR(error);
             return crow::response{ 404, "Forum not found: " + error };
         }
 
         std::vector<Comment> comments;
         if (!commentService.getCommentsForForum(forumId, comments, error))
         {
+            LOGERROR(error);
             return crow::response{ 500, "Failed to get comments: " + error };
         }
 
@@ -31,7 +33,7 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
         ctx["createdBy"] = forum.createdBy;
         ctx["createdAt"] = forum.createdAt;
 
-        if (forum.createdBy == currentUser)
+        if (forum.createdBy == currentUser|| currentUser == "Admin")
         {
             ctx["canEditPost"] = true;
         }
@@ -46,7 +48,7 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
             cjson["comment"] = c.comment;
             cjson["createdAt"] = c.createdAt;
 
-            if (c.username == currentUser)
+            if (c.username == currentUser || currentUser == "Admin")
             {
                 cjson["canEditComment"] = true;
             }
@@ -69,8 +71,15 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
         auto fields = parse_url_encoded(req.body);
         std::string comment = fields["comment"];
         std::string username = getUsernameFromCookie(req);
-
         std::string error;
+
+        if (username == "")
+        {
+            error = "Please log in to add comments.";
+            LOGERROR(error);
+            return crow::response(400, error);
+        }
+
         int commentId;
         if (!commentService.addComment(forumId, username, comment, commentId, error))
         {
