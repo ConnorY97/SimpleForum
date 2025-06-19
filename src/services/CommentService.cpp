@@ -38,8 +38,9 @@ CommentService::CommentService()
 bool CommentService::addComment(int forumId, const std::string& username, const std::string& commentText, int& commentId, std::string& error)
 {
     DatabaseManager::ScopedConnection conn;
-    if (!conn.isValid()) {
-        LOGERROR("DB connection failed");
+    if (!conn.isValid())
+    {
+        error = "Failed to connect to database";
         return false;
     }
 
@@ -50,7 +51,8 @@ bool CommentService::addComment(int forumId, const std::string& username, const 
     sqlite3_stmt* stmt;
     
     // Prepare the SQL statement
-    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
+    {
         error = sqlite3_errmsg(dataBase);
         return false;
     }
@@ -61,7 +63,8 @@ bool CommentService::addComment(int forumId, const std::string& username, const 
     sqlite3_bind_text(stmt, 3, commentText.c_str(), -1, SQLITE_TRANSIENT);
 
     // Execute the statement and check for success
-    if (sqlite3_step(stmt) != SQLITE_DONE) {
+    if (sqlite3_step(stmt) != SQLITE_DONE)
+    {
         error = sqlite3_errmsg(dataBase);
         sqlite3_finalize(stmt);
         return false;
@@ -78,8 +81,9 @@ bool CommentService::addComment(int forumId, const std::string& username, const 
 bool CommentService::getCommentsForForum(int forumId, std::vector<Comment>& comments, std::string& error)
 {
     DatabaseManager::ScopedConnection conn;
-    if (!conn.isValid()) {
-        LOGERROR("DB connection failed");
+    if (!conn.isValid())
+    {
+        error = "Failed to connect to database";
         return false;
     }
 
@@ -89,7 +93,8 @@ bool CommentService::getCommentsForForum(int forumId, std::vector<Comment>& comm
     sqlite3_stmt* stmt;
 
     // Prepare the SQL query
-    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
+    {
         error = sqlite3_errmsg(dataBase);
         return false;
     }
@@ -98,7 +103,8 @@ bool CommentService::getCommentsForForum(int forumId, std::vector<Comment>& comm
     sqlite3_bind_int(stmt, 1, forumId);
 
     // Loop through the results and populate the comments vector
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
+    while (sqlite3_step(stmt) == SQLITE_ROW)
+    {
         Comment comment;
         comment.id = sqlite3_column_int(stmt, 0);
         comment.username = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
@@ -116,7 +122,7 @@ bool CommentService::getCommentById(int commentId, Comment& comment, std::string
 {
     DatabaseManager::ScopedConnection conn;
     if (!conn.isValid()) {
-        LOGERROR("DB connection failed");
+        error = "Failed to connect to database";
         return false;
     }
 
@@ -126,7 +132,8 @@ bool CommentService::getCommentById(int commentId, Comment& comment, std::string
     sqlite3_stmt* stmt;
 
     // Prepare SQL query
-    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
+    {
         error = sqlite3_errmsg(dataBase);
         return false;
     }
@@ -144,7 +151,8 @@ bool CommentService::getCommentById(int commentId, Comment& comment, std::string
         sqlite3_finalize(stmt);
         return true;
     }
-    else {
+    else
+    {
         error = "Comment not found";
         sqlite3_finalize(stmt);
         return false;
@@ -155,8 +163,9 @@ bool CommentService::getCommentById(int commentId, Comment& comment, std::string
 bool CommentService::updateCommentById(int commentId, std::string& username, const std::string& newText, std::string& error)
 {
     DatabaseManager::ScopedConnection conn;
-    if (!conn.isValid()) {
-        LOGERROR("DB connection failed");
+    if (!conn.isValid())
+    {
+        error = "Failed to connect to database";
         return false;
     }
 
@@ -202,8 +211,9 @@ bool CommentService::updateCommentById(int commentId, std::string& username, con
 bool CommentService::deleteCommentById(int commentId, std::string& error)
 {
     DatabaseManager::ScopedConnection conn;
-    if (!conn.isValid()) {
-        LOGERROR("DB connection failed");
+    if (!conn.isValid())
+    {
+        error = "Failed to connect to database";
         return false;
     }
 
@@ -213,7 +223,8 @@ bool CommentService::deleteCommentById(int commentId, std::string& error)
     sqlite3_stmt* stmt;
 
     // Prepare the SQL delete query
-    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+    if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
+    {
         error = sqlite3_errmsg(dataBase);
         return false;
     }
@@ -222,7 +233,8 @@ bool CommentService::deleteCommentById(int commentId, std::string& error)
     sqlite3_bind_int(stmt, 1, commentId);
 
     // Execute the deletion
-    if (sqlite3_step(stmt) != SQLITE_DONE) {
+    if (sqlite3_step(stmt) != SQLITE_DONE)
+    {
         error = sqlite3_errmsg(dataBase);
         sqlite3_finalize(stmt);
         return false;
@@ -236,8 +248,9 @@ bool CommentService::deleteCommentById(int commentId, std::string& error)
 bool CommentService::clearComments(std::string& error)
 {
     DatabaseManager::ScopedConnection conn;
-    if (!conn.isValid()) {
-        LOGERROR("DB connection failed");
+    if (!conn.isValid())
+    {
+        error = "Failed to connect to database";
         return false;
     }
 
@@ -247,7 +260,8 @@ bool CommentService::clearComments(std::string& error)
     char* errMsg = nullptr;
 
     // Execute the SQL command
-    if (sqlite3_exec(dataBase, sql, nullptr, nullptr, &errMsg) != SQLITE_OK) {
+    if (sqlite3_exec(dataBase, sql, nullptr, nullptr, &errMsg) != SQLITE_OK)
+    {
         error = std::string("Failed to clear comments: ") + errMsg;
         sqlite3_free(errMsg);
         return false;

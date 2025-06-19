@@ -131,18 +131,18 @@ function cancelCommentEdit(event, commentId, originalComment) {
     const username = getUsernameFromCookie();
 
     commentDiv.innerHTML =
-        `
-            <p><strong>${username}</strong>: ${originalComment}</p>
-            <small>just now</small>
-            <div style="display: flex; gap: 0.5em; margin-top: 0.5em;">
-                <form onsubmit="return startCommentEdit(${commentId}, '${escapeSingleQuotes(originalComment)}')">
-                    <input type="submit" value="Edit" class="edit-button">
-                </form>
-                <form onsubmit="return deleteComment(event, ${commentId})">
-                    <input type="submit" value="Delete" class="edit-button">
-                </form>
-            </div>
-        `;
+    `
+        <p><strong>${username}</strong>: ${originalComment}</p>
+        <small>just now</small>
+        <div style="display: flex; gap: 0.5em; margin-top: 0.5em;">
+            <form onsubmit="return startCommentEdit(${commentId}, '${escapeSingleQuotes(originalComment)}')">
+                <input type="submit" value="Edit" class="edit-button">
+            </form>
+            <form onsubmit="return deleteComment(event, ${commentId})">
+                <input type="submit" value="Delete" class="edit-button">
+            </form>
+        </div>
+    `;
     return false;
 }
 
@@ -152,19 +152,19 @@ function addComment(event, forumId) {
     const comment = input.value;
 
     fetch(`/forum/${forumId}`,
-        {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `comment=${encodeURIComponent(comment)}`
-        })
-        .then(res => {
-            if (res.ok) {
-                location.reload();
-            }
-            else {
-                alert("Failed to post comment.");
-            }
-        });
+    {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `comment=${encodeURIComponent(comment)}`
+    })
+    .then(res => {
+        if (res.ok) {
+            location.reload();
+        }
+        else {
+            alert("Failed to post comment.");
+        }
+    });
 
     return false;
 }
@@ -173,17 +173,17 @@ function deleteComment(event, commentId) {
     event.preventDefault();
 
     fetch(`/delete/${commentId}`,
-        {
-            method: 'POST'
-        })
-        .then(res => {
-            if (res.ok) {
-                location.reload();
-            }
-            else {
-                alert("Failed to delete comment.");
-            }
-        });
+    {
+        method: 'POST'
+    })
+    .then(res => {
+        if (res.ok) {
+            location.reload();
+        }
+        else {
+            alert("Failed to delete comment.");
+        }
+    });
 
     return false;
 }

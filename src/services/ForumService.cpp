@@ -37,7 +37,7 @@ bool ForumService::createForum(const std::string& title, const std::string& desc
 {
     DatabaseManager::ScopedConnection conn;
     if (!conn.isValid()) {
-        LOGERROR("DB connection failed");
+        error = "Failed to connect to database";
         return false;
     }
 
