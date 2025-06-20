@@ -1,0 +1,21 @@
+table.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border: 2px solid #ccc;  /* <-- Outer table border */
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+table.user-table th,
+table.user-table td {
+    padding: 1em;
+    text-align: left;
+    border: 1px solid #ccc; /* <-- Cell borders */
+}
+
+table.user-table th {
+    background-color: #f0f0f0;
+    color: #333;
+    font-weight: bold;
+}
