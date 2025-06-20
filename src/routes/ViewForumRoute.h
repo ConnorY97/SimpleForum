@@ -87,7 +87,7 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
             return crow::response(400, error);
         }
 
-        LOGINFO(username + " created a new comment/" + std::to_string(commentId) + " on forum / " + std::to_string(forumId));
+        LOGINFO(username + " created a new comment/" + std::to_string(commentId) + " on forum/" + std::to_string(forumId));
         return crow::response(200);
     });
 
@@ -125,7 +125,14 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
             return crow::response(400, error);
         }
 
-        LOGINFO(username + " edited comment/" + std::to_string(commentId));
+        Comment comment;
+        if (!commentService.getCommentById(commentId, comment, error))
+        {
+            LOGERROR(error);
+            return crow::response(400, error);
+        }
+
+        LOGINFO(username + " created a new comment/" + std::to_string(commentId) + " on forum/" + std::to_string(comment.forumId));
         return crow::response(200);
     });
 
@@ -135,13 +142,21 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
     {
         std::string error;
         std::string username = getUsernameFromCookie(req);
+
+        Comment comment;
+        if (!commentService.getCommentById(commentId, comment, error))
+        {
+            LOGERROR(error);
+            return crow::response(400, error);
+        }
+
         if (!commentService.deleteCommentById(commentId, error))
         {
             LOGERROR(error);
             return crow::response(400, error);
         }
 
-        LOGINFO(username + " deleted a comment/" + std::to_string(commentId));
+        LOGINFO(username + " deleted comment/" + std::to_string(commentId) + " on forum/" + std::to_string(comment.forumId));
         return crow::response(200);
     });
 }
