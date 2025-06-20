@@ -1,8 +1,11 @@
-﻿function getUsernameFromCookie() {
+﻿function getUsernameFromCookie()
+{
     const cookies = document.cookie.split('; ');
-    for (const cookie of cookies) {
+    for (const cookie of cookies)
+    {
         const [name, value] = cookie.split('=');
-        if (name === 'user') {
+        if (name === 'user')
+        {
             return decodeURIComponent(value);
         }
     }
