@@ -49,7 +49,7 @@ bool CommentService::addComment(int forumId, const std::string& username, const 
     const char* sql = "INSERT INTO comments (forumId, username, comment, createdAt) VALUES (?, ?, ?, datetime('now'));";
 
     sqlite3_stmt* stmt;
-    
+
     // Prepare the SQL statement
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
     {

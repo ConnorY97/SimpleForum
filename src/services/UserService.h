@@ -4,6 +4,8 @@
 #include <mutex>
 #include <string>
 #include <iostream>
+#include <vector>
+#include "../utils/UserUtils.h"
 #include "../utils/LoggerUtilities.h"
 #include "../managers/DatabaseManager.h"
 
@@ -15,6 +17,7 @@ public:
     bool registerUser(const std::string& username, const std::string& password, std::string& error);
     bool registerUser(const std::string& username, const std::string& password, std::string& confirmPassword, std::string& error);
     bool loginUser (const std::string&username, const std::string& password, std::string& error);
+    bool ListUsers(std::vector<User>& users, std::string& error);
 
     bool clearUsers(std::string& error);
 

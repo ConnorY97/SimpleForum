@@ -66,6 +66,9 @@
         {{#isLoggedIn}}
         <a href="/create-forum">Create Forum</a>
         <a href="#" onclick="logout(event)">Log Out</a>
+        {{#admin}}
+            <a href="/admin/users">Show Users</a>
+        {{/admin}}
         {{/isLoggedIn}}
         {{^isLoggedIn}}
         <a href="/login">Login</a>

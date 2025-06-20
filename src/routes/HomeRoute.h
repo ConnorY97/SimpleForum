@@ -16,9 +16,11 @@ inline void setupHomeRoutes(crow::SimpleApp& app)
 
         std::string username = getUsernameFromCookie(req);
         bool isLoggedIn = !username.empty();
+        bool admin = username == "Admin";
 
         ctx["isLoggedIn"] = isLoggedIn;
         ctx["username"] = username;
+        ctx["admin"] = admin;
 
         auto page = crow::mustache::load("home.html").render(ctx);
         return crow::response{ page };

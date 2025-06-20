@@ -127,7 +127,7 @@ bool ForumService::listForums(std::vector<Forum>& forums, std::string& error)
 {
     DatabaseManager::ScopedConnection conn;
     if (!conn.isValid()) {
-        LOGERROR("DB connection failed");
+        error = "Failed to connect to database";
         return false;
     }
 
