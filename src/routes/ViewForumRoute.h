@@ -132,7 +132,7 @@ inline void setupForumViewRoutes(crow::SimpleApp& app, ForumService& forumServic
             return crow::response(400, error);
         }
 
-        LOGINFO(username + " created a new comment/" + std::to_string(commentId) + " on forum/" + std::to_string(comment.forumId));
+        LOGINFO(username + " edited comment/" + std::to_string(commentId) + " on forum/" + std::to_string(comment.forumId));
         return crow::response(200);
     });
 
