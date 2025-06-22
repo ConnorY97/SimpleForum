@@ -56,7 +56,7 @@ function submitPostEdit(event, forumId) {
         })
             .then(res => {
                 if (res.ok) {
-                    location.reload(); // ✅ Reload the page
+                    location.reload();
                 } else {
                     alert("Failed to update post.");
                 }
@@ -105,9 +105,10 @@ function submitCommentEdit(event, commentId) {
             })
         .then(res => {
             if (res.ok) {
+                const originalUsername = commentDiv.dataset.username;
                 commentDiv.innerHTML =
                     `
-                    <p><strong>${getUsernameFromCookie()}</strong>: ${updatedComment}</p>
+                    <p><strong>${originalUsername} **Editied**</strong>: ${updatedComment}</p>
                     <small>${createdAt}</small>
                     <form onsubmit="return startCommentEdit(${commentId}, '${escapeSingleQuotes(updatedComment)}')">
                         <input type="submit" value="Edit" class="edit-button">

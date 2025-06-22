@@ -171,8 +171,18 @@ bool CommentService::updateCommentById(int commentId, std::string& username, con
 
     sqlite3* dataBase = conn.get();
 
-    const char* sql = "UPDATE comments SET comment = ? WHERE id = ? AND username = ?;";
+    const char* sql;
     sqlite3_stmt* stmt;
+
+    // Admin can bypass the username check
+    if (username == "Admin")
+    {
+        sql = "UPDATE comments SET comment = ? WHERE id = ?;";
+    }
+    else
+    {
+        sql = "UPDATE comments SET comment = ? WHERE id = ? AND username = ?;";
+    }
 
     // Prepare the SQL query
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
