@@ -2,7 +2,8 @@
 #include "iostream"
 #include <string>
 
-struct Forum {
+struct Forum
+{
     int id;
     std::string title;
     std::string description;

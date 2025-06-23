@@ -1,28 +1,31 @@
 #include "CommentService.h"
 
-// Constructor: Initializes the SQLite database connection and creates the 'comments' table if it doesn't exist.
+// Constructor: Initializes the SQLite database connection and creates the 'comments' table if it
+// doesn't exist.
 CommentService::CommentService()
 {
     DatabaseManager::ScopedConnection conn;
-    if (!conn.isValid()) {
+    if (!conn.isValid())
+    {
         LOGERROR("DB connection failed");
         return;
     }
 
-    sqlite3* dataBase = conn.get();
+    sqlite3 *dataBase = conn.get();
 
-
-    // SQL command to create the 'comments' table with necessary fields and a foreign key reference to 'forums'.
-    const char* create_comments_sql =
+    // SQL command to create the 'comments' table with necessary fields and a foreign key reference
+    // to 'forums'.
+    const char *create_comments_sql =
         "CREATE TABLE IF NOT EXISTS comments ("
-        "id INTEGER PRIMARY KEY AUTOINCREMENT, "        // Unique ID for each comment
-        "forumId INTEGER NOT NULL, "                    // Associated forum's ID (foreign key)
-        "username TEXT NOT NULL, "                      // Username of the comment author
-        "comment TEXT NOT NULL, "                       // Actual comment text
-        "createdAt DATETIME DEFAULT CURRENT_TIMESTAMP, "// Auto-generated creation timestamp
-        "FOREIGN KEY(forumId) REFERENCES forums(id) ON DELETE CASCADE);"; // Delete comments if forum is deleted
+        "id INTEGER PRIMARY KEY AUTOINCREMENT, "         // Unique ID for each comment
+        "forumId INTEGER NOT NULL, "                     // Associated forum's ID (foreign key)
+        "username TEXT NOT NULL, "                       // Username of the comment author
+        "comment TEXT NOT NULL, "                        // Actual comment text
+        "createdAt DATETIME DEFAULT CURRENT_TIMESTAMP, " // Auto-generated creation timestamp
+        "FOREIGN KEY(forumId) REFERENCES forums(id) ON DELETE CASCADE);"; // Delete comments if
+                                                                          // forum is deleted
 
-    char* errMsg = nullptr;
+    char *errMsg = nullptr;
 
     // Execute the table creation SQL
     if (sqlite3_exec(dataBase, create_comments_sql, 0, 0, &errMsg) != SQLITE_OK)
@@ -35,7 +38,8 @@ CommentService::CommentService()
 }
 
 // Adds a new comment to the database for a given forum.
-bool CommentService::addComment(int forumId, const std::string& username, const std::string& commentText, int& commentId, std::string& error)
+bool CommentService::addComment(int forumId, const std::string &username,
+                                const std::string &commentText, int &commentId, std::string &error)
 {
     DatabaseManager::ScopedConnection conn;
     if (!conn.isValid())
@@ -44,11 +48,12 @@ bool CommentService::addComment(int forumId, const std::string& username, const 
         return false;
     }
 
-    sqlite3* dataBase = conn.get();
+    sqlite3 *dataBase = conn.get();
 
-    const char* sql = "INSERT INTO comments (forumId, username, comment, createdAt) VALUES (?, ?, ?, datetime('now'));";
+    const char *sql = "INSERT INTO comments (forumId, username, comment, createdAt) VALUES (?, ?, "
+                      "?, datetime('now'));";
 
-    sqlite3_stmt* stmt;
+    sqlite3_stmt *stmt;
 
     // Prepare the SQL statement
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
@@ -78,7 +83,8 @@ bool CommentService::addComment(int forumId, const std::string& username, const 
 }
 
 // Retrieves all comments for a specific forum ID, sorted by creation time.
-bool CommentService::getCommentsForForum(int forumId, std::vector<Comment>& comments, std::string& error)
+bool CommentService::getCommentsForForum(int forumId, std::vector<Comment> &comments,
+                                         std::string &error)
 {
     DatabaseManager::ScopedConnection conn;
     if (!conn.isValid())
@@ -87,10 +93,11 @@ bool CommentService::getCommentsForForum(int forumId, std::vector<Comment>& comm
         return false;
     }
 
-    sqlite3* dataBase = conn.get();
+    sqlite3 *dataBase = conn.get();
 
-    const char* sql = "SELECT id, username, comment, createdAt FROM comments WHERE forumId = ? ORDER BY createdAt ASC;";
-    sqlite3_stmt* stmt;
+    const char *sql = "SELECT id, username, comment, createdAt FROM comments WHERE forumId = ? "
+                      "ORDER BY createdAt ASC;";
+    sqlite3_stmt *stmt;
 
     // Prepare the SQL query
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
@@ -107,9 +114,9 @@ bool CommentService::getCommentsForForum(int forumId, std::vector<Comment>& comm
     {
         Comment comment;
         comment.id = sqlite3_column_int(stmt, 0);
-        comment.username = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-        comment.comment = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-        comment.createdAt = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+        comment.username = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
+        comment.comment = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 2));
+        comment.createdAt = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 3));
         comments.push_back(comment);
     }
 
@@ -118,18 +125,20 @@ bool CommentService::getCommentsForForum(int forumId, std::vector<Comment>& comm
 }
 
 // Fetches a single comment by its ID.
-bool CommentService::getCommentById(int commentId, Comment& comment, std::string& error)
+bool CommentService::getCommentById(int commentId, Comment &comment, std::string &error)
 {
     DatabaseManager::ScopedConnection conn;
-    if (!conn.isValid()) {
+    if (!conn.isValid())
+    {
         error = "Failed to connect to database";
         return false;
     }
 
-    sqlite3* dataBase = conn.get();
+    sqlite3 *dataBase = conn.get();
 
-    const char* sql = "SELECT id, forumID, username, comment, createdAt FROM comments WHERE id = ?;";
-    sqlite3_stmt* stmt;
+    const char *sql =
+        "SELECT id, forumID, username, comment, createdAt FROM comments WHERE id = ?;";
+    sqlite3_stmt *stmt;
 
     // Prepare SQL query
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
@@ -142,12 +151,13 @@ bool CommentService::getCommentById(int commentId, Comment& comment, std::string
     sqlite3_bind_int(stmt, 1, commentId);
 
     // Retrieve and store the comment data
-    if (sqlite3_step(stmt) == SQLITE_ROW) {
+    if (sqlite3_step(stmt) == SQLITE_ROW)
+    {
         comment.id = sqlite3_column_int(stmt, 0);
         comment.forumId = sqlite3_column_int(stmt, 1);
-        comment.username = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-        comment.comment = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
-        comment.createdAt = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+        comment.username = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 2));
+        comment.comment = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 3));
+        comment.createdAt = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 4));
         sqlite3_finalize(stmt);
         return true;
     }
@@ -160,7 +170,8 @@ bool CommentService::getCommentById(int commentId, Comment& comment, std::string
 }
 
 // Updates the text of a comment if the username matches.
-bool CommentService::updateCommentById(int commentId, std::string& username, const std::string& newText, std::string& error)
+bool CommentService::updateCommentById(int commentId, std::string &username,
+                                       const std::string &newText, std::string &error)
 {
     DatabaseManager::ScopedConnection conn;
     if (!conn.isValid())
@@ -169,10 +180,10 @@ bool CommentService::updateCommentById(int commentId, std::string& username, con
         return false;
     }
 
-    sqlite3* dataBase = conn.get();
+    sqlite3 *dataBase = conn.get();
 
-    const char* sql;
-    sqlite3_stmt* stmt;
+    const char *sql;
+    sqlite3_stmt *stmt;
 
     // Admin can bypass the username check
     if (username == "Admin")
@@ -218,7 +229,7 @@ bool CommentService::updateCommentById(int commentId, std::string& username, con
 }
 
 // Deletes a comment by its ID.
-bool CommentService::deleteCommentById(int commentId, std::string& error)
+bool CommentService::deleteCommentById(int commentId, std::string &error)
 {
     DatabaseManager::ScopedConnection conn;
     if (!conn.isValid())
@@ -227,10 +238,10 @@ bool CommentService::deleteCommentById(int commentId, std::string& error)
         return false;
     }
 
-    sqlite3* dataBase = conn.get();
+    sqlite3 *dataBase = conn.get();
 
-    const char* sql = "DELETE FROM comments WHERE id = ?;";
-    sqlite3_stmt* stmt;
+    const char *sql = "DELETE FROM comments WHERE id = ?;";
+    sqlite3_stmt *stmt;
 
     // Prepare the SQL delete query
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
@@ -255,7 +266,7 @@ bool CommentService::deleteCommentById(int commentId, std::string& error)
 }
 
 // Deletes all comments from the database (use with caution).
-bool CommentService::clearComments(std::string& error)
+bool CommentService::clearComments(std::string &error)
 {
     DatabaseManager::ScopedConnection conn;
     if (!conn.isValid())
@@ -264,10 +275,10 @@ bool CommentService::clearComments(std::string& error)
         return false;
     }
 
-    sqlite3* dataBase = conn.get();
+    sqlite3 *dataBase = conn.get();
 
-    const char* sql = "DELETE FROM comments"; // Deletes all records in the table
-    char* errMsg = nullptr;
+    const char *sql = "DELETE FROM comments"; // Deletes all records in the table
+    char *errMsg = nullptr;
 
     // Execute the SQL command
     if (sqlite3_exec(dataBase, sql, nullptr, nullptr, &errMsg) != SQLITE_OK)

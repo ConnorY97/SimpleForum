@@ -1,7 +1,8 @@
 #pragma once
 #include "iostream"
 #include <string>
-struct Comment {
+struct Comment
+{
     int id;
     int forumId;
     std::string username;

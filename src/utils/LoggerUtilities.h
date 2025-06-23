@@ -1,13 +1,13 @@
 ﻿#ifndef LOGGER_H
 #define LOGGER_H
 
-#include <string>
-#include <fstream>
-#include <mutex>
-#include <iostream>
-#include <sstream>
 #include <chrono>
+#include <fstream>
 #include <iomanip>
+#include <iostream>
+#include <mutex>
+#include <sstream>
+#include <string>
 
 enum class LogLevel
 {
@@ -17,58 +17,65 @@ enum class LogLevel
     SFDEBUG
 };
 
-class Logger {
-public:
-    static Logger& getInstance() {
+class Logger
+{
+  public:
+    static Logger &getInstance()
+    {
         static Logger instance;
         return instance;
     }
 
-    void log(const std::string& message, LogLevel level = LogLevel::SFINFO) {
+    void log(const std::string &message, LogLevel level = LogLevel::SFINFO)
+    {
         std::lock_guard<std::mutex> lock(logMutex);
         std::string timestamp = getTimestamp();
         std::string levelStr = levelToString(level);
         std::string formatted = "[" + timestamp + "] [" + levelStr + "] " + message;
 
-        if (logFile.is_open()) {
+        if (logFile.is_open())
+        {
             logFile << formatted << std::endl;
         }
 
-        if (consoleOutputEnabled) {
+        if (consoleOutputEnabled)
+        {
             std::cout << formatted << std::endl;
         }
     }
 
-    void setLogFile(const std::string& filename) {
+    void setLogFile(const std::string &filename)
+    {
         std::lock_guard<std::mutex> lock(logMutex);
-        if (logFile.is_open()) {
+        if (logFile.is_open())
+        {
             logFile.close();
         }
         logFile.open(filename, std::ios::app);
-        if (!logFile) {
+        if (!logFile)
+        {
             std::cerr << "[Logger] Failed to open log file: " << filename << std::endl;
         }
     }
 
-    void enableConsoleOutput(bool enable) {
-        consoleOutputEnabled = enable;
-    }
+    void enableConsoleOutput(bool enable) { consoleOutputEnabled = enable; }
 
-private:
-    Logger() {
-        setLogFile("application.log");
-    }
+  private:
+    Logger() { setLogFile("application.log"); }
 
-    ~Logger() {
-        if (logFile.is_open()) {
+    ~Logger()
+    {
+        if (logFile.is_open())
+        {
             logFile.close();
         }
     }
 
-    Logger(const Logger&) = delete;
-    Logger& operator=(const Logger&) = delete;
+    Logger(const Logger &) = delete;
+    Logger &operator=(const Logger &) = delete;
 
-    std::string getTimestamp() {
+    std::string getTimestamp()
+    {
         auto now = std::chrono::system_clock::now();
         auto in_time_t = std::chrono::system_clock::to_time_t(now);
         std::tm buf{};
@@ -82,13 +89,20 @@ private:
         return oss.str();
     }
 
-    std::string levelToString(LogLevel level) {
-        switch (level) {
-        case LogLevel::SFINFO: return "INFO";
-        case LogLevel::SFWARNING: return "WARNING";
-        case LogLevel::SFERROR: return "ERROR";
-        case LogLevel::SFDEBUG: return "DEBUG";
-        default: return "UNKNOWN";
+    std::string levelToString(LogLevel level)
+    {
+        switch (level)
+        {
+        case LogLevel::SFINFO:
+            return "INFO";
+        case LogLevel::SFWARNING:
+            return "WARNING";
+        case LogLevel::SFERROR:
+            return "ERROR";
+        case LogLevel::SFDEBUG:
+            return "DEBUG";
+        default:
+            return "UNKNOWN";
         }
     }
 
@@ -97,12 +111,13 @@ private:
     bool consoleOutputEnabled = true;
 };
 
-#define LOGCTX(msg, level) \
-    Logger::getInstance().log(std::string(__FILE__) + ":" + std::to_string(__LINE__) + " " + (msg), (level))
+#define LOGCTX(msg, level)                                                                         \
+    Logger::getInstance().log(                                                                     \
+        std::string(__FILE__) + ":" + std::to_string(__LINE__) + " " + (msg), (level))
 
-#define LOGINFO(msg)    Logger::getInstance().log((msg), LogLevel::SFINFO)
+#define LOGINFO(msg) Logger::getInstance().log((msg), LogLevel::SFINFO)
 #define LOGWARNING(msg) LOGCTX((msg), LogLevel::SFWARNING)
-#define LOGERROR(msg)   LOGCTX((msg), LogLevel::SFERROR)
-#define LOGDEBUG(msg)   LOGCTX((msg), LogLevel::SFDEBUG)
+#define LOGERROR(msg) LOGCTX((msg), LogLevel::SFERROR)
+#define LOGDEBUG(msg) LOGCTX((msg), LogLevel::SFDEBUG)
 
 #endif // LOGGER_H

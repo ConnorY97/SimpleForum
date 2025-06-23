@@ -2,7 +2,7 @@
 #include "crow.h"
 #include <string>
 
-inline std::string getUsernameFromCookie(const crow::request& req)
+inline std::string getUsernameFromCookie(const crow::request &req)
 {
     std::string cookieHeader = req.get_header_value("Cookie");
     std::string username;
@@ -10,7 +10,8 @@ inline std::string getUsernameFromCookie(const crow::request& req)
     if (pos != std::string::npos)
     {
         auto end = cookieHeader.find(";", pos);
-        if (end == std::string::npos) end = cookieHeader.length();
+        if (end == std::string::npos)
+            end = cookieHeader.length();
         username = cookieHeader.substr(pos + 5, end - (pos + 5));
     }
     return username;

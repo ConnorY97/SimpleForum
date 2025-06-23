@@ -4,23 +4,24 @@
 ForumService::ForumService()
 {
     DatabaseManager::ScopedConnection conn;
-    if (!conn.isValid()) {
+    if (!conn.isValid())
+    {
         LOGERROR("DB connection failed");
         return;
     }
 
-    sqlite3* dataBase = conn.get();
+    sqlite3 *dataBase = conn.get();
 
     // SQL statement to create the forums table if it doesn't already exist
-    const char* create_forums_sql =
+    const char *create_forums_sql =
         "CREATE TABLE IF NOT EXISTS forums ("
-        "id INTEGER PRIMARY KEY AUTOINCREMENT, "         // Unique ID for each forum
-        "title TEXT NOT NULL, "                          // Forum title (required)
-        "description TEXT, "                             // Optional description
-        "createdBy TEXT NOT NULL, "                      // Creator's username (required)
-        "createdAt TEXT NOT NULL);";                     // Timestamp of forum creation
+        "id INTEGER PRIMARY KEY AUTOINCREMENT, " // Unique ID for each forum
+        "title TEXT NOT NULL, "                  // Forum title (required)
+        "description TEXT, "                     // Optional description
+        "createdBy TEXT NOT NULL, "              // Creator's username (required)
+        "createdAt TEXT NOT NULL);";             // Timestamp of forum creation
 
-    char* errMsg = nullptr;
+    char *errMsg = nullptr;
 
     // Execute SQL statement to create the table
     if (sqlite3_exec(dataBase, create_forums_sql, 0, 0, &errMsg) != SQLITE_OK)
@@ -30,24 +31,26 @@ ForumService::ForumService()
     }
 
     LOGINFO("Forums Database Establised");
-} 
+}
 
 // Creates a new forum and returns its ID
-bool ForumService::createForum(const std::string& title, const std::string& description, const std::string& createdBy, int& forumId, std::string& error)
+bool ForumService::createForum(const std::string &title, const std::string &description,
+                               const std::string &createdBy, int &forumId, std::string &error)
 {
     DatabaseManager::ScopedConnection conn;
-    if (!conn.isValid()) {
+    if (!conn.isValid())
+    {
         error = "Failed to connect to database";
         return false;
     }
 
-    sqlite3* dataBase = conn.get();
+    sqlite3 *dataBase = conn.get();
 
     // SQL insert statement with datetime now
-    const char* sql =
-        "INSERT INTO forums (title, description, createdBy, createdAt) VALUES (?, ?, ?, datetime('now'));";
+    const char *sql = "INSERT INTO forums (title, description, createdBy, createdAt) VALUES (?, ?, "
+                      "?, datetime('now'));";
 
-    sqlite3_stmt* stmt;
+    sqlite3_stmt *stmt;
     // Prepare the SQL statement
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
     {
@@ -75,18 +78,21 @@ bool ForumService::createForum(const std::string& title, const std::string& desc
 }
 
 // Updates a forum if the requesting user is the creator
-bool ForumService::updateForumById(int forumId, std::string username, const std::string& newTitle, const std::string& newDescription, std::string& error)
+bool ForumService::updateForumById(int forumId, std::string username, const std::string &newTitle,
+                                   const std::string &newDescription, std::string &error)
 {
     DatabaseManager::ScopedConnection conn;
-    if (!conn.isValid()) {
+    if (!conn.isValid())
+    {
         LOGERROR("DB connection failed");
         return false;
     }
 
-    sqlite3* dataBase = conn.get();
+    sqlite3 *dataBase = conn.get();
 
-    const char* sql = "UPDATE forums SET title = ?, description = ? WHERE id = ? AND createdBy = ?;";
-    sqlite3_stmt* stmt;
+    const char *sql =
+        "UPDATE forums SET title = ?, description = ? WHERE id = ? AND createdBy = ?;";
+    sqlite3_stmt *stmt;
 
     // Prepare the update statement
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
@@ -123,18 +129,19 @@ bool ForumService::updateForumById(int forumId, std::string username, const std:
 }
 
 // Retrieves all forums and stores them in the provided vector
-bool ForumService::listForums(std::vector<Forum>& forums, std::string& error)
+bool ForumService::listForums(std::vector<Forum> &forums, std::string &error)
 {
     DatabaseManager::ScopedConnection conn;
-    if (!conn.isValid()) {
+    if (!conn.isValid())
+    {
         error = "Failed to connect to database";
         return false;
     }
 
-    sqlite3* dataBase = conn.get();
+    sqlite3 *dataBase = conn.get();
 
-    const char* sql = "SELECT id, title, description, createdBy, createdAt FROM forums;";
-    sqlite3_stmt* stmt;
+    const char *sql = "SELECT id, title, description, createdBy, createdAt FROM forums;";
+    sqlite3_stmt *stmt;
 
     // Prepare the select statement
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
@@ -148,10 +155,10 @@ bool ForumService::listForums(std::vector<Forum>& forums, std::string& error)
     {
         Forum forum;
         forum.id = sqlite3_column_int(stmt, 0);
-        forum.title = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-        forum.description = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-        forum.createdBy = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
-        forum.createdAt = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+        forum.title = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
+        forum.description = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 2));
+        forum.createdBy = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 3));
+        forum.createdAt = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 4));
         forums.push_back(forum);
     }
 
@@ -160,18 +167,20 @@ bool ForumService::listForums(std::vector<Forum>& forums, std::string& error)
 }
 
 // Retrieves a specific forum by ID
-bool ForumService::getForumById(int id, Forum& forum, std::string& error)
+bool ForumService::getForumById(int id, Forum &forum, std::string &error)
 {
     DatabaseManager::ScopedConnection conn;
-    if (!conn.isValid()) {
+    if (!conn.isValid())
+    {
         LOGERROR("DB connection failed");
         return false;
     }
 
-    sqlite3* dataBase = conn.get();
+    sqlite3 *dataBase = conn.get();
 
-    const char* sql = "SELECT id, title, description, createdBy, createdAt FROM forums WHERE id = ?;";
-    sqlite3_stmt* stmt;
+    const char *sql =
+        "SELECT id, title, description, createdBy, createdAt FROM forums WHERE id = ?;";
+    sqlite3_stmt *stmt;
 
     // Prepare the select statement
     if (sqlite3_prepare_v2(dataBase, sql, -1, &stmt, nullptr) != SQLITE_OK)
@@ -187,10 +196,10 @@ bool ForumService::getForumById(int id, Forum& forum, std::string& error)
     if (sqlite3_step(stmt) == SQLITE_ROW)
     {
         forum.id = sqlite3_column_int(stmt, 0);
-        forum.title = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-        forum.description = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-        forum.createdBy = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
-        forum.createdAt = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+        forum.title = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
+        forum.description = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 2));
+        forum.createdBy = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 3));
+        forum.createdAt = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 4));
         sqlite3_finalize(stmt);
         return true;
     }
@@ -202,18 +211,19 @@ bool ForumService::getForumById(int id, Forum& forum, std::string& error)
 }
 
 // Deletes all forums from the database (useful for testing or admin tools)
-bool ForumService::clearForums(std::string& error)
+bool ForumService::clearForums(std::string &error)
 {
     DatabaseManager::ScopedConnection conn;
-    if (!conn.isValid()) {
+    if (!conn.isValid())
+    {
         LOGERROR("DB connection failed");
         return false;
     }
 
-    sqlite3* dataBase = conn.get();
+    sqlite3 *dataBase = conn.get();
 
-    const char* sql = "DELETE FROM forums";
-    char* errMsg = nullptr;
+    const char *sql = "DELETE FROM forums";
+    char *errMsg = nullptr;
 
     // Execute the delete statement
     if (sqlite3_exec(dataBase, sql, nullptr, nullptr, &errMsg) != SQLITE_OK)

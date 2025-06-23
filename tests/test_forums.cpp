@@ -9,7 +9,8 @@ TEST_CASE_METHOD(SharedServiceFixture, "Create a new forum successfully", "[Foru
     REQUIRE(forumService.clearForums(error));
 
     int id = 1;
-    bool result = forumService.createForum("Test Title", "Test Description", "Test User", id, error);
+    bool result =
+        forumService.createForum("Test Title", "Test Description", "Test User", id, error);
 
     REQUIRE(result);
     REQUIRE(error.empty());
@@ -32,7 +33,8 @@ TEST_CASE_METHOD(SharedServiceFixture, "List multiple forums", "[ForumService]")
     for (int i = 0; i < forumAmount; i++)
     {
         int forumId;
-        bool result = forumService.createForum("Title " + std::to_string(i), "Description", "User", forumId, error);
+        bool result = forumService.createForum("Title " + std::to_string(i), "Description", "User",
+                                               forumId, error);
         REQUIRE(result);
     }
 
@@ -117,7 +119,9 @@ TEST_CASE_METHOD(SharedServiceFixture, "Update non-existent forum fails", "[Foru
     REQUIRE_FALSE(error.empty());
 }
 
-TEST_CASE_METHOD(SharedServiceFixture, "Creating a forum with empty title or description fails gracefully", "[ForumService]")
+TEST_CASE_METHOD(SharedServiceFixture,
+                 "Creating a forum with empty title or description fails gracefully",
+                 "[ForumService]")
 {
     std::string error;
     REQUIRE(forumService.clearForums(error));
@@ -130,7 +134,8 @@ TEST_CASE_METHOD(SharedServiceFixture, "Creating a forum with empty title or des
     REQUIRE_FALSE(error.empty());
 }
 
-TEST_CASE_METHOD(SharedServiceFixture, "Duplicate forums are allowed if titles are the same", "[ForumService]")
+TEST_CASE_METHOD(SharedServiceFixture, "Duplicate forums are allowed if titles are the same",
+                 "[ForumService]")
 {
     std::string error;
     REQUIRE(forumService.clearForums(error));

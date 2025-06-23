@@ -1,28 +1,28 @@
 #pragma once
-#include "crow.h"
 #include "../utils/CookieUtils.h"
+#include "crow.h"
 
-inline void setupHomeRoutes(crow::SimpleApp& app)
+inline void setupHomeRoutes(crow::SimpleApp &app)
 {
-    CROW_ROUTE(app, "/").methods("GET"_method)
-    ([](const crow::request& req) -> crow::response
-    {
-        crow::mustache::context ctx;
-
-        if (const char* responseParam = req.url_params.get("response"))
+    CROW_ROUTE(app, "/").methods("GET"_method)(
+        [](const crow::request &req) -> crow::response
         {
-            ctx["response"] = responseParam;
-        }
+            crow::mustache::context ctx;
 
-        std::string username = getUsernameFromCookie(req);
-        bool isLoggedIn = !username.empty();
-        bool admin = username == "Admin";
+            if (const char *responseParam = req.url_params.get("response"))
+            {
+                ctx["response"] = responseParam;
+            }
 
-        ctx["isLoggedIn"] = isLoggedIn;
-        ctx["username"] = username;
-        ctx["admin"] = admin;
+            std::string username = getUsernameFromCookie(req);
+            bool isLoggedIn = !username.empty();
+            bool admin = username == "Admin";
 
-        auto page = crow::mustache::load("home.html").render(ctx);
-        return crow::response{ page };
-    });
+            ctx["isLoggedIn"] = isLoggedIn;
+            ctx["username"] = username;
+            ctx["admin"] = admin;
+
+            auto page = crow::mustache::load("home.html").render(ctx);
+            return crow::response{page};
+        });
 }

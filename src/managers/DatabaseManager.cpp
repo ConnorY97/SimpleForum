@@ -2,7 +2,7 @@
 
 DatabaseManager::DatabaseManager() {}
 
-DatabaseManager& DatabaseManager::getInstance()
+DatabaseManager &DatabaseManager::getInstance()
 {
     static DatabaseManager instance;
     return instance;
@@ -19,12 +19,13 @@ DatabaseManager::ScopedConnection::ScopedConnection()
 
 DatabaseManager::ScopedConnection::~ScopedConnection()
 {
-    if (db) {
+    if (db)
+    {
         sqlite3_close(db);
     }
 }
 
-sqlite3* DatabaseManager::ScopedConnection::get()
+sqlite3 *DatabaseManager::ScopedConnection::get()
 {
     return db;
 }
