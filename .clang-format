@@ -1,0 +1,10 @@
+BasedOnStyle: llvm
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 100
+AllowShortFunctionsOnASingleLine: Inline
+BreakBeforeBraces: Allman  # Or choose Attach, Linux, Mozilla, etc.
+SortIncludes: true
+ReflowComments: true
+SpacesBeforeTrailingComments: 1
