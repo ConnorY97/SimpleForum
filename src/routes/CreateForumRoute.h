@@ -1,6 +1,7 @@
 #pragma once
 #include "../services/ForumService.h"
 #include "../utils/CookieUtils.h"
+#include "../utils/UrlUtils.h"
 #include "crow.h"
 
 inline void setupCreateForumRoutes(crow::SimpleApp &app, ForumService &forumService)

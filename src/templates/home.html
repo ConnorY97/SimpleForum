@@ -3,55 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>SimpleForum</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: auto;
-            padding: 2rem;
-            background-color: #f9f9f9;
-            color: #333;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 0.5em;
-        }
-
-        p {
-            font-size: 1.1em;
-            margin-bottom: 1.5em;
-        }
-
-        .nav {
-            margin-top: 1.5rem;
-        }
-
-            .nav a {
-                display: inline-block;
-                margin-right: 1.2rem;
-                padding: 0.4rem 0;
-                font-size: 1.1em;
-                text-decoration: none;
-                color: #007BFF;
-            }
-
-                .nav a:hover {
-                    text-decoration: underline;
-                }
-
-        footer {
-            margin-top: 4rem;
-            color: #aaa;
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        .response {
-            color: green;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" href="/public/styles/homeStyle.css">
 </head>
 <body>
     <h1>Welcome to SimpleForum</h1>
@@ -61,20 +13,20 @@
     <p class="response">{{response}}</p>
     {{/response}}
 
-    <div class="nav">
+<div class="nav">
+    {{#isLoggedIn}}
         <a href="/forums">Show Forums</a>
-        {{#isLoggedIn}}
         <a href="/create-forum">Create Forum</a>
         <a href="#" onclick="logout(event)">Log Out</a>
         {{#admin}}
             <a href="/admin/users">Show Users</a>
         {{/admin}}
-        {{/isLoggedIn}}
-        {{^isLoggedIn}}
+    {{/isLoggedIn}}
+    {{^isLoggedIn}}
         <a href="/login">Login</a>
         <a href="/register">Register</a>
-        {{/isLoggedIn}}
-    </div>
+    {{/isLoggedIn}}
+</div>
 
     <footer>
         <p>&copy; 2025 SimpleForum Project</p>

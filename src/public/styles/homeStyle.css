@@ -1,0 +1,47 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: auto;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 0.5em;
+}
+
+p {
+    font-size: 1.1em;
+    margin-bottom: 1.5em;
+}
+
+.nav {
+    margin-top: 1.5rem;
+}
+
+    .nav a {
+        display: inline-block;
+        margin-right: 1.2rem;
+        padding: 0.4rem 0;
+        font-size: 1.1em;
+        text-decoration: none;
+        color: #007BFF;
+    }
+
+        .nav a:hover {
+            text-decoration: underline;
+        }
+
+footer {
+    margin-top: 4rem;
+    color: #aaa;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.response {
+    color: green;
+    font-weight: bold;
+}

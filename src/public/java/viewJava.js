@@ -108,11 +108,16 @@ function submitCommentEdit(event, commentId) {
                 const originalUsername = commentDiv.dataset.username;
                 commentDiv.innerHTML =
                     `
-                    <p><strong>${originalUsername} **Editied**</strong>: ${updatedComment}</p>
+                    <p><strong>${originalUsername}</strong>: ${updatedComment}</p>
                     <small>${createdAt}</small>
-                    <form onsubmit="return startCommentEdit(${commentId}, '${escapeSingleQuotes(updatedComment)}')">
-                        <input type="submit" value="Edit" class="edit-button">
-                    </form>
+                    <div style="display: flex; gap: 0.5em; margin-top: 0.5em;">
+                        <form onsubmit="return startCommentEdit(${commentId}, '${escapeSingleQuotes(updatedComment)}')">
+                            <input type="submit" value="Edit" class="edit-button">
+                        </form>
+                        <form onsubmit="return deleteComment(event, ${commentId})">
+                            <input type="submit" value="Delete" class="edit-button">
+                        </form>
+                    </div>
                 `;
             }
             else {
