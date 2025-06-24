@@ -12,6 +12,9 @@
 2. run `cmake -S . -B build -DBUILD_TESTS=ON`
     - Run `-DBUILD_TESTS=OFF` again to improve compile time.
 
+## Committing without changes
+1. Run `git commit --allow-empty -m "Your commit message here"`
+
 ### Build and Run App
 1. After a commit run the following cmd `git push live master`
     - If you need to create a commit for testing use `git commit --allow-empty -m "Commit Msg"`
