@@ -1,18 +1,16 @@
 #pragma once
 #include "crow.h"
+#include "../utils/LoggerUtilities.h"
 
-inline void setupPortfolioRoutes(crow::SimpleApp &app)
+inline void setupPortfolioRoutes(crow::SimpleApp& app)
 {
     CROW_ROUTE(app, "/portfolio")
-    (
-        []
-        {
-            std::ifstream file("public/portfolio.html");
-            if (!file)
-                return crow::response(500, "Portfolio page missing.");
-
-            std::ostringstream contents;
-            contents << file.rdbuf();
-            return crow::response{200, contents.str()};
-        });
+        (
+            []
+            {
+                crow::mustache::context ctx;
+                auto page = crow::mustache::load("portfolio.html").render(ctx);
+                LOGINFO("Loading profolio page");
+                return crow::response{ page };
+            });
 }
