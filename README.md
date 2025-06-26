@@ -12,6 +12,11 @@
 2. run `cmake -S . -B build -DBUILD_TESTS=ON`
     - Run `-DBUILD_TESTS=OFF` again to improve compile time.
 
+## Enabling Markdown Converting
+1. In the root of the project
+2. run `cmake -DENABLE_MARKDOWN=ON ..`
+3. in the `build` dir run `cmake build ..`
+
 ## Committing without changes
 1. Run `git commit --allow-empty -m "Your commit message here"`
 
