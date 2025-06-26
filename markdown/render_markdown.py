@@ -11,8 +11,8 @@ except ImportError:
     import markdown
     use_md4c = False
 
-INPUT_DIR = Path("docs")
-OUTPUT_DIR = Path("build/public/content")
+INPUT_DIR = Path("./docs")
+OUTPUT_DIR = Path("../build/public/content")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 def convert_md_to_html(md_text: str) -> str:
