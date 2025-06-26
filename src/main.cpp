@@ -9,6 +9,7 @@
 #include "routes/StaticRoutes.h"
 #include "routes/ViewForumRoute.h"
 #include "routes/ViewUsersRoute.h"
+#include "routes/ContentRoutes.h"
 #include "services/CommentService.h"
 #include "services/ForumService.h"
 #include "services/UserService.h"
@@ -32,6 +33,7 @@ int main()
     setupForumViewRoutes(app, forumService, commentService);
     setupAdminRoutes(app, userService);
     setupPortfolioRoutes(app);
+    setupContentRoutes(app);
 
     app.port(18080).multithreaded().run();
 }
