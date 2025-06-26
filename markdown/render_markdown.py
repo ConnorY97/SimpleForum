@@ -5,11 +5,11 @@ import sys
 from pathlib import Path
 
 try:
-    import md4c
-    use_md4c = True
-except ImportError:
     import markdown
     use_md4c = False
+except ImportError:
+    print("[ERROR] markdown module not found. Please install it with 'pip install markdown'")
+    sys.exit(1)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 INPUT_DIR = PROJECT_ROOT / "markdown/docs"
@@ -17,10 +17,7 @@ OUTPUT_DIR = PROJECT_ROOT / "build/public/content"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 def convert_md_to_html(md_text: str) -> str:
-    if use_md4c:
-        return md4c.md2html(md_text)
-    else:
-        return markdown.markdown(md_text)
+    return markdown.markdown(md_text)
 
 def main():
     if not INPUT_DIR.exists():
