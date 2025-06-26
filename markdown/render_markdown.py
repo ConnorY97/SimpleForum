@@ -12,7 +12,7 @@ except ImportError:
     use_md4c = False
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-INPUT_DIR = PROJECT_ROOT / "docs"
+INPUT_DIR = PROJECT_ROOT / "markdown/docs"
 OUTPUT_DIR = PROJECT_ROOT / "build/public/content"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
