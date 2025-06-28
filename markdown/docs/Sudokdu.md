@@ -76,11 +76,7 @@ run: |
 ```
 Though it isn't really a great idea to be running sudo commands from a GitHub action. But we carry on.
 
-Once that was all figured out I was successfully building. The next hurdle was how I would get those builds. I have previously just uploaded artifacts to the action page. However, this puts the APK in a zip file and requires digging down into the actions to find the right build. So I found a nice solution. Using releases to more easily make the builds accessible. For example [Build v1.03](https://github.com/ConnorY97/Sudoku/releases/tag/v1.03),
-
-one of the earliest builds. I found an action which would allow me to create a release when I pushed a tag to the repo: [Action Github Release](https://github.com/softprops/action-gh-release). Which took a bit of figuring out but now works like a charm!
-
-Next was setting up the remote unit tests:
+Once that was all figured out I was successfully building. The next hurdle was how I would get those builds. I have previously just uploaded artifacts to the action page. However, this puts the APK in a zip file and requires digging down into the actions to find the right build. So I found a nice solution. Using releases to more easily make the builds accessible. For example [Build v1.03](https://github.com/ConnorY97/Sudoku/releases/tag/v1.03), one of the earliest builds. I found an action which would allow me to create a release when I pushed a tag to the repo: [Action Github Release](https://github.com/softprops/action-gh-release). Which took a bit of figuring out but now works like a charm! Next was setting up the remote unit tests:
 ``` bash
 ./gradlew test
 ```
