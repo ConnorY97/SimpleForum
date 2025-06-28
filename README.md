@@ -14,3 +14,6 @@
 
 ### Committing without changes
 1. Run `git commit --allow-empty -m "Your commit message here"`
+
+### Reading website logs
+1. run `tmux attach -t simpleforum`
