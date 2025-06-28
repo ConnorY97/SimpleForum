@@ -110,5 +110,5 @@ TEST_CASE_METHOD(SharedServiceFixture, "Username does not exist with invalid use
     std::string username = "TestUser";
     
     REQUIRE_FALSE(userService.userExists(username, error));
-    REQUIRE(error == "TestUser does not exist")
+    REQUIRE(error == "TestUser does not exist");
 }
