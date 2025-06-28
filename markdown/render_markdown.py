@@ -15,6 +15,10 @@ def convert_md_to_html(md_text: str) -> str:
     raw_html = markdown.markdown(md_text, extensions=["extra"])
     soup = BeautifulSoup(raw_html, "html.parser")
 
+    # Find the first heading for the <title>
+    title_tag = soup.find(['h1', 'h2'])
+    title = title_tag.get_text() if title_tag else "Document"
+
     # Group <h2> sections with following <p> tags into <section>
     output_body = BeautifulSoup("<body></body>", "html.parser")
     body_tag = output_body.body
@@ -34,13 +38,15 @@ def convert_md_to_html(md_text: str) -> str:
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Document</title>
+<title>{title}</title>
 <link rel="stylesheet" href="/public/styles/baseStyle.css">
 <link rel="stylesheet" href="/public/styles/markdownStyle.css">
 </head>
 {str(body_tag)}
 </html>"""
+
     return full_html
+
 
 
 def main():
