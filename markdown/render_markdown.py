@@ -39,6 +39,7 @@ def convert_md_to_html(md_text: str) -> str:
 <head>
 <meta charset="UTF-8">
 <title>{title}</title>
+<a href="/portfolio">My Portfolio</a>
 <link rel="stylesheet" href="/public/styles/baseStyle.css">
 <link rel="stylesheet" href="/public/styles/markdownStyle.css">
 </head>
