@@ -103,12 +103,13 @@ TEST_CASE_METHOD(SharedServiceFixture, "Username exsits with valid users", "[Use
     REQUIRE(error.empty());
 }
 
-TEST_CASE_METHOD(SharedServiceFixture, "Username does not exist with invalid users", "[SharedService]")
+TEST_CASE_METHOD(SharedServiceFixture, "Username does not exist with invalid users",
+                 "[SharedService]")
 {
     std::string error;
-    
+
     std::string username = "TestUser";
-    
+
     REQUIRE_FALSE(userService.userExists(username, error));
     REQUIRE(error == "TestUser does not exist.");
 }

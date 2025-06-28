@@ -228,10 +228,10 @@ bool UserService::userExists(std::string username, std::string &error)
         return false;
     }
 
-    sqlite3* database = conn.get();
+    sqlite3 *database = conn.get();
 
-    const char* sql = "SELECT 1 FROM users WHERE username = ? LIMIT 1;";
-    sqlite3_stmt* stmt;
+    const char *sql = "SELECT 1 FROM users WHERE username = ? LIMIT 1;";
+    sqlite3_stmt *stmt;
 
     if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) != SQLITE_OK)
     {
@@ -249,9 +249,9 @@ bool UserService::userExists(std::string username, std::string &error)
     }
 
     sqlite3_finalize(stmt);
-    if (!exists)    {
+    if (!exists)
+    {
         error = username + " does not exist.";
     }
     return exists;
 }
-
