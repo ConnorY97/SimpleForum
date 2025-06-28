@@ -88,3 +88,27 @@ TEST_CASE_METHOD(SharedServiceFixture, "Login fails with empty password", "[User
     REQUIRE_FALSE(result);
     REQUIRE(error == "Missing username or password");
 }
+
+TEST_CASE_METHOD(SharedServiceFixture, "Username exsits with valid users", "[UserService]")
+{
+    std::string error;
+
+    std::string username = "TestUser";
+    std::string password = "TestPassword";
+
+    REQUIRE(userService.registerUser(username, password, error));
+    REQUIRE(error.empty());
+
+    REQUIRE(userService.userExists(username, error));
+    REQUIRE(error.empty());
+}
+
+TEST_CASE_METHOD(SharedServiceFixture, "Username does not exist with invalid users", "[SharedService]")
+{
+    std::string error;
+    
+    std::string username = "TestUser";
+    
+    REQUIRE_FALSE(userService.userExists(username, error));
+    REQUIRE(error == "TestUser does not exist")
+}

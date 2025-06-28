@@ -249,7 +249,7 @@ bool UserService::userExists(std::string username, std::string &error)
     }
 
     sqlite3_finalize(stmt);
-    error = "User does not exist";
+    error = username + " does not exist.";
     return exists;
 }
 
