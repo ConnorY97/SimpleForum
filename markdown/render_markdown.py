@@ -3,6 +3,7 @@
 import os
 import sys
 from pathlib import Path
+from bs4 import BeautifulSoup
 
 try:
     import markdown
@@ -15,22 +16,37 @@ INPUT_DIR = PROJECT_ROOT / "markdown/docs"
 OUTPUT_DIR = PROJECT_ROOT / "build/public/content"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-BASE_STYLESHEET_LINK = '<link rel="stylesheet" href="/public/styles/baseStyle.css">'
-
 def convert_md_to_html(md_text: str) -> str:
-    body = markdown.markdown(md_text)
-    html = f"""<!DOCTYPE html>
+    raw_html = markdown(md_text, extensions=["extra"])
+    soup = BeautifulSoup(raw_html, "html.parser")
+
+    # Group <h2> sections with following <p> tags into <section>
+    output_body = BeautifulSoup("<body></body>", "html.parser")
+    body_tag = output_body.body
+
+    current_section = None
+    for element in soup.contents:
+        if element.name == "h2":
+            current_section = output_body.new_tag("section")
+            current_section.append(element)
+            body_tag.append(current_section)
+        elif current_section is not None:
+            current_section.append(element)
+        else:
+            body_tag.append(element)
+
+    full_html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Document</title>
-{BASE_STYLESHEET_LINK}
+<link rel="stylesheet" href="/public/styles/baseStyle.css">
+<link rel="stylesheet" href="/public/styles/markdownStyle.css">
 </head>
-<body>
-{body}
-</body>
+{str(body_tag)}
 </html>"""
-    return html
+    return full_html
+
 
 def main():
     if not INPUT_DIR.exists():
