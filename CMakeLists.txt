@@ -109,10 +109,3 @@ if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
-
-# Enable optianl markdown converting
-option(ENABLE_MARKDOWN "Enable markdown rendering support" OFF)
-
-if(ENABLE_MARKDOWN)
-    add_subdirectory(markdown)
-endif()
