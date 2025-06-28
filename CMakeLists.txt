@@ -35,6 +35,7 @@ file(GLOB ROUTE_FILES ${CMAKE_SOURCE_DIR}/src/routes/*)
 
 file(GLOB_RECURSE JAVA_FILES ${CMAKE_SOURCE_DIR}/src/public/java/*)
 file(GLOB_RECURSE STYLE_FILES ${CMAKE_SOURCE_DIR}/src/public/styles/*)
+file(GLOB_RECURSE IMAGE_FILES ${CMAKE_SOURCE_DIR}/src/public/images/*)
 
 # Group files in Visual Studio
 source_group("Source Files" FILES ${FORUM_CORE_SRC})

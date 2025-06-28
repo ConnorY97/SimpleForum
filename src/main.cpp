@@ -24,7 +24,7 @@ int main()
     CommentService commentService;
 
     setUpStaticRoutes(app);
-    setupHomeRoutes(app);
+    setupHomeRoutes(app, userService);
     setupRegisterRoutes(app, userService);
     setupLoginRoutes(app, userService);
     setupLogoutRoutes(app);

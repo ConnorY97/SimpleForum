@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 
-import os
 import sys
 from pathlib import Path
 from bs4 import BeautifulSoup
 import markdown
+import shutil
+from pathlib import Path
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 INPUT_DIR = PROJECT_ROOT / "markdown/docs"
 OUTPUT_DIR = PROJECT_ROOT / "build/public/content"
+IMAGE_SOURCE = PROJECT_ROOT / "src/public/images"
+IMAGE_DEST = PROJECT_ROOT / "build/public/images"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 def convert_md_to_html(md_text: str) -> str:
@@ -48,7 +52,20 @@ def convert_md_to_html(md_text: str) -> str:
 
     return full_html
 
+def copy_images():
+    if not IMAGE_SOURCE.exists():
+        print(f"[WARNING] Source image directory not found: {IMAGE_SOURCE}")
+        return
 
+    IMAGE_DEST.mkdir(parents=True, exist_ok=True)
+
+    for file in IMAGE_SOURCE.iterdir():
+        if file.is_file():
+            try:
+                shutil.copy2(file, IMAGE_DEST / file.name)
+                print(f"[IMG] Copied: {file.name}")
+            except Exception as e:
+                print(f"[ERROR] Failed to copy {file.name}: {e}")
 
 def main():
     if not INPUT_DIR.exists():
@@ -68,6 +85,9 @@ def main():
             print(f"[OK] Converted: {md_file.name} -> {out_file.name}")
         except Exception as e:
             print(f"[ERROR] Failed to convert {md_file}: {e}")
+
+    # Copying images
+    copy_images()
 
     # Delete orphaned HTML files
     existing_html_files = set(f.name for f in OUTPUT_DIR.glob("*.html"))

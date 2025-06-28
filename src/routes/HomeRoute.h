@@ -1,21 +1,33 @@
 #pragma once
+#include "../services/UserService.h"
 #include "../utils/CookieUtils.h"
 #include "crow.h"
 
-inline void setupHomeRoutes(crow::SimpleApp &app)
+inline void setupHomeRoutes(crow::SimpleApp &app, UserService& userService)
 {
     CROW_ROUTE(app, "/").methods("GET"_method)(
-        [](const crow::request &req) -> crow::response
+        [&userService](const crow::request &req) -> crow::response
         {
             crow::mustache::context ctx;
-
+            std::string error;
             if (const char *responseParam = req.url_params.get("response"))
             {
                 ctx["response"] = responseParam;
             }
 
+            bool isLoggedIn = false;
             std::string username = getUsernameFromCookie(req);
-            bool isLoggedIn = !username.empty();
+            if (!username.empty())
+            {
+                if (userService.userExists(username, error))
+                {
+                    isLoggedIn = true;
+                }
+                else
+                {
+                    LOGERROR(error);
+                }
+            }
             bool admin = username == "Admin";
 
             ctx["isLoggedIn"] = isLoggedIn;

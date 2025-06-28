@@ -8,8 +8,12 @@ body {
     background-color: #fff;
 }
 
+h1 {
+    text-align: center;
+}
+
 /* Headings */
-h1, h2, h3 {
+h2, h3 {
     margin-top: 1.5rem;
     margin-bottom: 0.5rem;
     line-height: 1.2;
@@ -41,4 +45,13 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+/* Images */
+img {
+    display: block;
+    max-width: 80%;
+    height: auto;
+    margin: 1rem auto;
+    border-radius: 6px;
 }

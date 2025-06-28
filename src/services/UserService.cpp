@@ -218,3 +218,38 @@ bool UserService::clearUsers(std::string &error)
 
     return true;
 }
+
+bool UserService::userExists(std::string username, std::string &error)
+{
+    DatabaseManager::ScopedConnection conn;
+    if (!conn.isValid())
+    {
+        error = "Failed to connect to database";
+        return false;
+    }
+
+    sqlite3* database = conn.get();
+
+    const char* sql = "SELECT 1 FROM users WHERE username = ? LIMIT 1;";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) != SQLITE_OK)
+    {
+        error = sqlite3_errmsg(database);
+        return false;
+    }
+
+    // Bind the username parameter
+    sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC);
+
+    bool exists = false;
+    if (sqlite3_step(stmt) == SQLITE_ROW)
+    {
+        exists = true;
+    }
+
+    sqlite3_finalize(stmt);
+    error = "User does not exist";
+    return exists;
+}
+
