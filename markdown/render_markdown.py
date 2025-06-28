@@ -19,18 +19,17 @@ BASE_STYLESHEET_LINK = '<link rel="stylesheet" href="/public/styles/baseStyle.cs
 
 def convert_md_to_html(md_text: str) -> str:
     body = markdown.markdown(md_text)
-    html = 
-        f"""<!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <title>Document</title>
-                {BASE_STYLESHEET_LINK}
-            </head>
-            <body>
-                {body}
-            </body>
-            </html>"""
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+{BASE_STYLESHEET_LINK}
+</head>
+<body>
+{body}
+</body>
+</html>"""
     return html
 
 def main():
