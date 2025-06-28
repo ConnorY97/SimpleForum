@@ -4,12 +4,7 @@ import os
 import sys
 from pathlib import Path
 from bs4 import BeautifulSoup
-
-try:
-    import markdown
-except ImportError:
-    print("[ERROR] markdown module not found. Please install it with 'pip install markdown'")
-    sys.exit(1)
+import markdown
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 INPUT_DIR = PROJECT_ROOT / "markdown/docs"
@@ -17,7 +12,7 @@ OUTPUT_DIR = PROJECT_ROOT / "build/public/content"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 def convert_md_to_html(md_text: str) -> str:
-    raw_html = markdown(md_text, extensions=["extra"])
+    raw_html = markdown.markdown(md_text, extensions=["extra"])
     soup = BeautifulSoup(raw_html, "html.parser")
 
     # Group <h2> sections with following <p> tags into <section>
