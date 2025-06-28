@@ -1,9 +1,5 @@
 ## Dread Engine Mk1
-In university, I got my first taste of computer graphics through a course focused on real-time rendering using [OpenGL](https://www.opengl.org/). We had to create two 3D objects with textures and add a couple of lights.
-
-For my project, I used models made by other students and played around with [Phong Lighting](https://en.wikipedia.org/wiki/Phong_reflection_model) to light up the scene.
-
-I also set up the camera so it could move around and explore everything.
+In university, I got my first taste of computer graphics through a course focused on real-time rendering using [OpenGL](https://www.opengl.org/). We had to create two 3D objects with textures and add a couple of lights.For my project, I used models made by other students and played around with [Phong Lighting](https://en.wikipedia.org/wiki/Phong_reflection_model) to light up the scene.I also set up the camera so it could move around and explore everything.
 
 [Github](https://github.com/ConnorY97/DreadEngine)
 

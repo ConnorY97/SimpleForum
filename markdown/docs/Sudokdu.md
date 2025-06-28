@@ -58,7 +58,6 @@ my.sudoku.game
 The major improvement was readability and functionality. By decoupling functionality it allows for much faster development.
 
 ### Remote Builds and Testing
-![Sudoku Build Action](/assets/img/sudokubildaction.png)
 First I had to figure out how to build an APK from CLI which in essence is simple:
 ``` bash
 ./gradlew assembleDebug
@@ -79,8 +78,6 @@ Though it isn't really a great idea to be running sudo commands from a GitHub ac
 
 Once that was all figured out I was successfully building. The next hurdle was how I would get those builds. I have previously just uploaded artifacts to the action page. However, this puts the APK in a zip file and requires digging down into the actions to find the right build. So I found a nice solution. Using releases to more easily make the builds accessible. For example [Build v1.03](https://github.com/ConnorY97/Sudoku/releases/tag/v1.03),
 
-![Release No. 1](/assets/img/sudokurelease.png)
-
 one of the earliest builds. I found an action which would allow me to create a release when I pushed a tag to the repo: [Action Github Release](https://github.com/softprops/action-gh-release). Which took a bit of figuring out but now works like a charm!
 
 Next was setting up the remote unit tests:
@@ -88,18 +85,13 @@ Next was setting up the remote unit tests:
 ./gradlew test
 ```
 Luckily since I had figured out how to wrangle the permissions for building it was a lot more straight forward and I got them up and running rather quickly and submitting the results to the action summary:
-![Test Results](/assets/img/testResults.png)
 Which is always satisfying to see running all green.
 
 ### Features
 1. Loading screen: the loading screen displays boards and some of their stats: current timer and amount complete. <br>
-![Loading Screen](/assets/img/load.png)
 2. Stats: general stats <br>
-![Stats](/assets/img/stats.png)
 3. Menu: for better movement around the app <br>
-![Menu](/assets/img/menu.png)
 4. Number Grid: improved input of numbers to the sudoku grid by replacing the android keyboard with a number grid. This was a major quality of life improvement. <br>
-![Number Grid](/assets/img/numbergrid.png)
 
 These came in small increments and have all had massive improvements on the quality of life of the app.
 
