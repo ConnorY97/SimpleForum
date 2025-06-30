@@ -48,3 +48,15 @@ img {
     margin: 1rem auto;
     border-radius: 6px;
 }
+
+pre > code[class^="language-c++"] {
+    display: block;
+    background-color: #f5f5f5;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    overflow-x: auto;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95rem;
+    white-space: pre;
+}

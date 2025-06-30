@@ -7,7 +7,8 @@ As I have never worked with Kotlin before, I heavily relied on ChatGPT in the be
 Firstly I took all the functions out of the `MainActivity` class. As I was not sure how to access those functions for unit testing. However, as you can imagine this isn't great. But it did allow me to create some unit tests:
 ``` c++
 @Test
-fun testCreatePuzzle_emptyCellsBasedOnDifficulty() {
+fun testCreatePuzzle_emptyCellsBasedOnDifficulty()
+{
     val fullBoard = generateFullBoard()
     val difficulty = "medium" // Mock difficulty
     val puzzleBoard = createPuzzle(fullBoard, difficulty)
