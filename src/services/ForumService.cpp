@@ -210,7 +210,7 @@ bool ForumService::getForumById(int id, Forum &forum, std::string &error)
     return false;
 }
 
-bool ForumService::deleteForumById(int id, std::string& error)
+bool ForumService::deleteForumById(int id, std::string &error)
 {
     DatabaseManager::ScopedConnection conn;
     if (!conn.isValid())
@@ -219,10 +219,10 @@ bool ForumService::deleteForumById(int id, std::string& error)
         return false;
     }
 
-    sqlite3* database = conn.get();
+    sqlite3 *database = conn.get();
 
-    const char* sql = "DELETE FROM forums WHERE id = ?;";
-    sqlite3_stmt* stmt;
+    const char *sql = "DELETE FROM forums WHERE id = ?;";
+    sqlite3_stmt *stmt;
 
     // Prepare the SQL delete query
     if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) != SQLITE_OK)
