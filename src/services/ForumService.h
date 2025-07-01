@@ -22,5 +22,7 @@ class ForumService
 
     bool getForumById(int id, Forum &forum, std::string &error);
 
+    bool deleteForumById(int id, std::string& error);
+
     bool clearForums(std::string &error);
 };

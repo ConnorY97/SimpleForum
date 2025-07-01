@@ -10,42 +10,46 @@
         <h2>{{description}}</h2>
         <p class="post-meta">Posted by {{createdBy}} on {{createdAt}}</p>
     </div>
-    {{#canEditPost}}
+    <div style="display: flex; gap: 0.5em; margin-top: 0.5em;">
+        {{#canEditPost}}
         <form onsubmit="return startPostEdit('{{id}}', '{{title}}', '{{description}}')">
             <input type="submit" value="Edit" class="edit-button">
         </form>
-    {{/canEditPost}}
-
+        <form onsubmit="return deleteForum(event, '{{id}}')">
+            <input type="submit" value="Delete" class="edit-button">
+        </form>
+        {{/canEditPost}}
+    </div>
     <h3>Comments</h3>
-    {{#comments}}
-    <div class="comment" id="comment-{{id}}" data-created-at="{{createdAt}}", data-username="{{username}}">
-        <p><strong>{{username}}</strong>: {{comment}}</p>
-        <small>{{createdAt}}</small>
+        {{#comments}}
+        <div class="comment" id="comment-{{id}}" data-created-at="{{createdAt}}" , data-username="{{username}}">
+            <p><strong>{{username}}</strong>: {{comment}}</p>
+            <small>{{createdAt}}</small>
 
-        <div style="display: flex; gap: 0.5em; margin-top: 0.5em;">
-            {{#canEditComment}}
+            <div style="display: flex; gap: 0.5em; margin-top: 0.5em;">
+                {{#canEditComment}}
                 <form onsubmit="return startCommentEdit('{{id}}', '{{comment}}')">
                     <input type="submit" value="Edit" class="edit-button">
                 </form>
                 <form onsubmit="return deleteComment(event, '{{id}}')">
                     <input type="submit" value="Delete" class="edit-button">
                 </form>
-            {{/canEditComment}}
+                {{/canEditComment}}
+            </div>
         </div>
-    </div>
-    {{/comments}}
+        {{/comments}}
 
-    {{#error}}
-    <p class="error">{{error}}</p>
-    {{/error}}
+        {{#error}}
+        <p class="error">{{error}}</p>
+        {{/error}}
 
-    <form onsubmit="return addComment(event, '{{id}}')">
-        <input type="text" id="new-comment-input" name="comment" placeholder="Write a comment..." required>
-        <input type="submit" value="Post">
-    </form>
+        <form onsubmit="return addComment(event, '{{id}}')">
+            <input type="text" id="new-comment-input" name="comment" placeholder="Write a comment..." required>
+            <input type="submit" value="Post">
+        </form>
 
-    <a href="/forums">← Back to forum list</a>
+        <a href="/forums">← Back to forum list</a>
 
-    <script src="/public/java/viewJava.js"></script>
+        <script src="/public/java/viewJava.js"></script>
 </body>
 </html>

@@ -210,6 +210,42 @@ bool ForumService::getForumById(int id, Forum &forum, std::string &error)
     return false;
 }
 
+bool ForumService::deleteForumById(int id, std::string& error)
+{
+    DatabaseManager::ScopedConnection conn;
+    if (!conn.isValid())
+    {
+        error = "Failed to connect to database";
+        return false;
+    }
+
+    sqlite3* database = conn.get();
+
+    const char* sql = "DELETE FROM forums WHERE id = ?;";
+    sqlite3_stmt* stmt;
+
+    // Prepare the SQL delete query
+    if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) != SQLITE_OK)
+    {
+        error = sqlite3_errmsg(database);
+        return false;
+    }
+
+    // Bind the forum ID
+    sqlite3_bind_int(stmt, 1, id);
+
+    // Execute the deletion
+    if (sqlite3_step(stmt) != SQLITE_DONE)
+    {
+        error = sqlite3_errmsg(database);
+        sqlite3_finalize(stmt);
+        return false;
+    }
+
+    sqlite3_finalize(stmt);
+    return true;
+}
+
 // Deletes all forums from the database (useful for testing or admin tools)
 bool ForumService::clearForums(std::string &error)
 {

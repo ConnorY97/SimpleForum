@@ -28,6 +28,13 @@ inline void setupHomeRoutes(crow::SimpleApp &app, UserService& userService)
                     LOGERROR(error);
                 }
             }
+
+            if (const char* success = req.url_params.get("forumDeleteSuccess"))
+            {
+                if (std::string(success) == "true")
+                    ctx["forumDeleteSuccess"] = true;
+            }
+
             bool admin = username == "Admin";
 
             ctx["isLoggedIn"] = isLoggedIn;

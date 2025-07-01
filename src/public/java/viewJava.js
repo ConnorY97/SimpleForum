@@ -181,7 +181,7 @@ function addComment(event, forumId) {
 function deleteComment(event, commentId) {
     event.preventDefault();
 
-    fetch(`/delete/${commentId}`,
+    fetch(`/deleteComment/${commentId}`,
     {
         method: 'POST'
     })
@@ -194,5 +194,22 @@ function deleteComment(event, commentId) {
         }
     });
 
+    return false;
+}
+
+function deleteForum(event, forumId) {
+    event.preventDefault();
+
+    fetch(`/deleteForum/${forumId}`, {
+        method: 'POST'
+    })
+        .then(res => {
+            if (res.ok) {
+                window.location.href = "/?forumDeleteSuccess=true";
+            }
+            else {
+                alert("Failed to delete forum.");
+            }
+        });
     return false;
 }

@@ -13,21 +13,25 @@
     <p class="response">{{response}}</p>
     {{/response}}
 
-<div class="nav">
-    {{#isLoggedIn}}
+    {{#forumDeleteSuccess}}
+    <p class="response">Forum Deleted Successfully</p>
+    {{/forumDeleteSuccess}}
+
+    <div class="nav">
+        {{#isLoggedIn}}
         <a href="/forums">Show Forums</a>
         <a href="/create-forum">Create Forum</a>
         <a href="#" onclick="logout(event)">Log Out</a>
         {{#admin}}
-            <a href="/admin/users">Show Users</a>
+        <a href="/admin/users">Show Users</a>
         {{/admin}}
-    {{/isLoggedIn}}
-    {{^isLoggedIn}}
+        {{/isLoggedIn}}
+        {{^isLoggedIn}}
         <a href="/login">Login</a>
         <a href="/register">Register</a>
-    {{/isLoggedIn}}
+        {{/isLoggedIn}}
         <a href="/portfolio">My Portfolio</a>
-</div>
+    </div>
 
     <footer>
         <p>&copy; 2025 SimpleForum Project</p>

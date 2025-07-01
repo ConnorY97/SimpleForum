@@ -149,7 +149,7 @@ inline void setupForumViewRoutes(crow::SimpleApp &app, ForumService &forumServic
             });
 
     // Delete comments
-    CROW_ROUTE(app, "/delete/<int>")
+    CROW_ROUTE(app, "/deleteComment/<int>")
         .methods("POST"_method)(
             [&commentService](const crow::request &req, int commentId)
             {
@@ -171,6 +171,24 @@ inline void setupForumViewRoutes(crow::SimpleApp &app, ForumService &forumServic
 
                 LOGINFO(username + " deleted comment/" + std::to_string(commentId) + " on forum/" +
                         std::to_string(comment.forumId));
+                return crow::response(200);
+            });
+
+    // Delete forum
+    CROW_ROUTE(app, "/deleteForum/<int>")
+        .methods("POST"_method)(
+            [&forumService](const crow::request& req, int forumId)
+            {
+                std::string error;
+                std::string username = getUsernameFromCookie(req);
+
+                if (!forumService.deleteForumById(forumId, error))
+                {
+                    LOGERROR(error);
+                    return crow::response(400, error);
+                }
+
+                LOGINFO(username + " deleted forum/" + std::to_string(forumId));
                 return crow::response(200);
             });
 }
