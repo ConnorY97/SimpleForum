@@ -146,3 +146,29 @@ TEST_CASE_METHOD(SharedServiceFixture, "Duplicate forums are allowed if titles a
 
     REQUIRE(id1 != id2);
 }
+
+TEST_CASE_METHOD(SharedServiceFixture, "Successfully deleted forum with valid ID", "[ForumService]")
+{
+    std::string error;
+    REQUIRE(forumService.clearForums(error));
+
+    int id;
+    REQUIRE(forumService.createForum("Title", "Desc", "Username", id, error));
+
+    REQUIRE(forumService.deleteForumById(id, error));
+
+    REQUIRE(error.empty());
+}
+
+TEST_CASE_METHOD(SharedServiceFixture, "Fail to delete forum with invalid ID", "[ForumService]")
+{
+    std::string error;
+    REQUIRE(forumService.clearForums(error));
+
+    int id;
+    REQUIRE(forumService.createForum("Title", "Desc", "Username", id, error));
+
+    REQUIRE_FALSE(forumService.deleteForumById(id + 1, error));
+
+    REQUIRE_FALSE(error.empty());
+}
