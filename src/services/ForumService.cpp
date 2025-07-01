@@ -242,7 +242,15 @@ bool ForumService::deleteForumById(int id, std::string& error)
         return false;
     }
 
+    int changes = sqlite3_changes(database);
     sqlite3_finalize(stmt);
+
+    if (changes == 0)
+    {
+        error = "Forum not found or already deleted.";
+        return false;
+    }
+
     return true;
 }
 
