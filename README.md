@@ -20,6 +20,6 @@
 
 ### Set up virtual environment to render markdown
 1. `python -m venv venv`
-2. `venv\Scripts\activate`
+2. `source venv\bin\activate` on linux, `venv/Scripts/astivate.ps2` on windows
 3. `pip install beautifulsoup4 lxml markdown`
 4. Windows = `./render.ps1`, Linux = `./render_markdown.py`
